@@ -6,7 +6,7 @@
         public string Availability { get; set; }
         public string LocationCity { get; set;}
 
-        public string OperatingRadius { get; set;}
+        public int OperatingRadius { get; set;}
 
         public bool PhotoService { get; set; }
         public bool DronePhotoService { get; set; }
