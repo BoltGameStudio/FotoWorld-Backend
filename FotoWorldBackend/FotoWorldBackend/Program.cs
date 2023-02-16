@@ -1,5 +1,8 @@
-using FotoWorldBackend.Services;
+using FotoWorldBackend.Models;
+using FotoWorldBackend.Services.Auth;
+using FotoWorldBackend.Services.Email;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +14,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 

@@ -1,6 +1,7 @@
 ﻿using FotoWorldBackend.Models;
 
-namespace FotoWorldBackend.Services
+
+namespace FotoWorldBackend.Services.Auth
 {
     public interface IAuthService
     {
