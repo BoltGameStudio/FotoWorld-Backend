@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace FotoWorldBackend.Models;
 
@@ -34,15 +35,13 @@ public partial class FotoWorldContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-RS4EM3L;Database=FotoWorld;Trusted_Connection=True;Encrypt=False;");
+        => optionsBuilder.UseSqlServer(_config.GetSection("ConnectionStrings:DevDatabase").Value);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<FollowedOffer>(entity =>
         {
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.OfferId).HasColumnName("offerID");
             entity.Property(e => e.UserId).HasColumnName("userID");
 
@@ -59,9 +58,7 @@ public partial class FotoWorldContext : DbContext
 
         modelBuilder.Entity<Offer>(entity =>
         {
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.OperatorId).HasColumnName("operatorID");
             entity.Property(e => e.Title)
@@ -76,9 +73,7 @@ public partial class FotoWorldContext : DbContext
 
         modelBuilder.Entity<OfferGallery>(entity =>
         {
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.OfferId).HasColumnName("offerID");
             entity.Property(e => e.PhotoId).HasColumnName("photoID");
 
@@ -95,9 +90,7 @@ public partial class FotoWorldContext : DbContext
 
         modelBuilder.Entity<Operator>(entity =>
         {
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Availability)
                 .HasMaxLength(50)
                 .HasColumnName("availability");
@@ -129,9 +122,7 @@ public partial class FotoWorldContext : DbContext
 
         modelBuilder.Entity<OperatorRating>(entity =>
         {
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Comment)
                 .HasMaxLength(150)
                 .HasColumnName("comment");
@@ -152,9 +143,7 @@ public partial class FotoWorldContext : DbContext
 
         modelBuilder.Entity<OperatorService>(entity =>
         {
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.DroneFilm).HasColumnName("droneFilm");
             entity.Property(e => e.DronePhoto).HasColumnName("dronePhoto");
             entity.Property(e => e.Filming).HasColumnName("filming");
@@ -163,9 +152,7 @@ public partial class FotoWorldContext : DbContext
 
         modelBuilder.Entity<Photo>(entity =>
         {
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.PhotoUrl)
                 .HasMaxLength(255)
                 .HasColumnName("photoURL");
@@ -173,9 +160,7 @@ public partial class FotoWorldContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .HasColumnName("email");

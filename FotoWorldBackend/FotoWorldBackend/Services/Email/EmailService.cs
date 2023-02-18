@@ -38,7 +38,7 @@ namespace FotoWorldBackend.Services.Email
             email.Subject = "Account Activation";
 
             //tutaj trzeba skleic ladnego urla
-            email.Body = new TextPart(TextFormat.Html) { Text = _config.GetSection("BackendUrl").Value };
+            email.Body = new TextPart(TextFormat.Html) { Text = _config.GetValue<string>("Urls:BackendUrl") };
 
             using var smtp = new SmtpClient();
             smtp.Connect(_config.GetSection("EmailHost").Value, Convert.ToInt32(_config.GetSection("EmailPort").Value), SecureSocketOptions.StartTls);
