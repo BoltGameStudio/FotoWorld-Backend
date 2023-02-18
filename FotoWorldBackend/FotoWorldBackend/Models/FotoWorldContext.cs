@@ -6,15 +6,16 @@ namespace FotoWorldBackend.Models;
 
 public partial class FotoWorldContext : DbContext
 {
-
     public FotoWorldContext()
     {
     }
-    private readonly IConfiguration _config;
+
     public FotoWorldContext(DbContextOptions<FotoWorldContext> options)
         : base(options)
     {
     }
+
+    private readonly IConfiguration _config;
 
     public virtual DbSet<FollowedOffer> FollowedOffers { get; set; }
 
@@ -33,8 +34,8 @@ public partial class FotoWorldContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer(_config.GetConnectionString("DevDatabase"));
-                                        //tutaj server trzeba podmienic na swoj lokalny a potem na serwer
+        => optionsBuilder.UseSqlServer("Server=DESKTOP-RS4EM3L;Database=FotoWorld;Trusted_Connection=True;Encrypt=False;");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<FollowedOffer>(entity =>
@@ -104,6 +105,7 @@ public partial class FotoWorldContext : DbContext
                 .HasMaxLength(100)
                 .HasColumnName("email");
             entity.Property(e => e.HashedPassword).HasColumnName("hashedPassword");
+            entity.Property(e => e.IsActice).HasColumnName("isActice");
             entity.Property(e => e.IsCompany).HasColumnName("isCompany");
             entity.Property(e => e.LocationCity)
                 .HasMaxLength(75)
@@ -178,6 +180,7 @@ public partial class FotoWorldContext : DbContext
                 .HasMaxLength(100)
                 .HasColumnName("email");
             entity.Property(e => e.HashedPassword).HasColumnName("hashedPassword");
+            entity.Property(e => e.IsActice).HasColumnName("isActice");
             entity.Property(e => e.PasswordSalt).HasColumnName("passwordSalt");
             entity.Property(e => e.PhoneNumber)
                 .HasMaxLength(20)

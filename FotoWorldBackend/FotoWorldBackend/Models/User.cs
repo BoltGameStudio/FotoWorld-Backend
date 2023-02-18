@@ -17,6 +17,8 @@ public partial class User
 
     public string? PhoneNumber { get; set; }
 
+    public bool IsActice { get; set; }
+
     public virtual ICollection<FollowedOffer> FollowedOffers { get; } = new List<FollowedOffer>();
 
     public virtual ICollection<OperatorRating> OperatorRatings { get; } = new List<OperatorRating>();

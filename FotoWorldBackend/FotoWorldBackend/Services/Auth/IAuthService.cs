@@ -7,8 +7,8 @@ namespace FotoWorldBackend.Services.Auth
     {
         bool Login(LoginModel login);
 
-        bool RegisterUser(RegisterUserModel register);
+        User RegisterUser(RegisterUserModel register);
 
-        bool RegisterOperator(RegisterOperatorModel register);
+        Operator RegisterOperator(RegisterOperatorModel register);
     }
 }

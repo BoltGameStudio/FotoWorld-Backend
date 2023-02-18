@@ -27,6 +27,8 @@ public partial class Operator
 
     public int Services { get; set; }
 
+    public bool IsActice { get; set; }
+
     public virtual ICollection<Offer> Offers { get; } = new List<Offer>();
 
     public virtual ICollection<OperatorRating> OperatorRatings { get; } = new List<OperatorRating>();

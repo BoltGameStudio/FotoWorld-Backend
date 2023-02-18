@@ -1,5 +1,5 @@
 ﻿using FotoWorldBackend.Models;
-
+using FotoWorldBackend.Services.Email;
 using FotoWorldBackend.Utilities;
 using Microsoft.AspNetCore.Identity;
 
@@ -9,11 +9,12 @@ namespace FotoWorldBackend.Services.Auth
     {
         private readonly FotoWorldContext _context;
         private PasswordHash _passwordHash;
-
+        private readonly IEmailService _emailService;
         public AuthService()
         {
             _context = new FotoWorldContext();
             _passwordHash = new PasswordHash();
+            
         }
 
         //jezeli gosc jest operatorem to ma zwykle konto wiec go zalogujmy jako zwykle konto a potem mu zrobimy odpwiedni token na bazie tego co zaznaczy
@@ -22,15 +23,19 @@ namespace FotoWorldBackend.Services.Auth
         {
 
 
-            var user = _context.Users.FirstOrDefault(m => m.Email == login.Username);
+            var user = _context.Users.FirstOrDefault(m => m.Email == login.Username ||m.Username==login.Username);
             if (user != null)
             {
-                return _passwordHash.VerifyPassword(login.Password, user);
+                if(user.IsActice)
+                {
+                    return _passwordHash.VerifyPassword(login.Password, user);
+                }
+                
             }
             return false;
         }
 
-        public bool RegisterOperator(RegisterOperatorModel register)
+        public Operator RegisterOperator(RegisterOperatorModel register)
         {
             var newServices = new OperatorService();
             var newOperator = new Operator();
@@ -60,7 +65,7 @@ namespace FotoWorldBackend.Services.Auth
                     newOperator.IsCompany = register.IsCompany;
                     newOperator.LocationCity = register.LocationCity;
                     newOperator.OperatingRadius = register.OperatingRadius;
-
+                    newOperator.IsActice = false;
                     _context.Operators.Add(newOperator);
                     _context.SaveChanges();
 
@@ -70,18 +75,19 @@ namespace FotoWorldBackend.Services.Auth
                     newUser.PhoneNumber = newOperator.PhoneNumber;
                     newUser.PasswordSalt = newOperator.PasswordSalt;
                     newUser.HashedPassword = newOperator.HashedPassword;
+                    newUser.IsActice = false;
                     _context.Users.Add(newUser);
                     _context.SaveChanges();
-                    return true;
+                    return newOperator;
                 }
 
 
             }
 
-            return false;
+            return null ;
         }
 
-        public bool RegisterUser(RegisterUserModel register)
+        public User RegisterUser(RegisterUserModel register)
         {
             if (_context.Users.FirstOrDefault(m => m.Email == register.Email) == null)
             {
@@ -93,14 +99,20 @@ namespace FotoWorldBackend.Services.Auth
                     newUser.PhoneNumber = register.PhoneNumber;
                     newUser.PasswordSalt = _passwordHash.GenerateSalt();
                     newUser.HashedPassword = _passwordHash.HashPassword(register.Password, newUser.PasswordSalt);
+                    newUser.IsActice = false;
                     _context.Users.Add(newUser);
                     _context.SaveChanges();
-                    return true;
+
+
+
+
+
+                    return newUser;
                 }
 
 
             }
-            return false;
+            return null;
         }
     }
 }
