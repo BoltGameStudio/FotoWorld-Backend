@@ -10,5 +10,7 @@ namespace FotoWorldBackend.Services.Auth
         User RegisterUser(RegisterUserModel register);
 
         Operator RegisterOperator(RegisterOperatorModel register);
+
+        bool ActivateAccount(int id);
     }
 }

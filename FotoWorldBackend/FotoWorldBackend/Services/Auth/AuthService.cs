@@ -2,6 +2,7 @@
 using FotoWorldBackend.Services.Email;
 using FotoWorldBackend.Utilities;
 using Microsoft.AspNetCore.Identity;
+using System.Text.RegularExpressions;
 
 namespace FotoWorldBackend.Services.Auth
 {
@@ -113,6 +114,20 @@ namespace FotoWorldBackend.Services.Auth
 
             }
             return null;
+        }
+
+
+        public bool ActivateAccount(int id) { 
+            User userToActivate= _context.Users.FirstOrDefault(m=>m.Id== id);
+            if (userToActivate != null)
+            {
+                userToActivate.IsActice= true;
+                _context.SaveChanges();
+
+                return true;
+            }
+
+            return false;
         }
     }
 }
