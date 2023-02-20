@@ -24,6 +24,11 @@ namespace FotoWorldBackend.Controllers
         }
 
 
+        /// <summary>
+        /// Registers new user
+        /// </summary>
+        /// <param name="reqest">Register Data</param>
+        /// <returns></returns>
         [Route("Register")]
         [HttpPost]
         public IActionResult Register([FromBody] RegisterUserModel reqest)
@@ -34,7 +39,40 @@ namespace FotoWorldBackend.Controllers
         }
 
 
+        /// <summary>
+        /// Registers new user
+        /// </summary>
+        /// <param name="reqest">Register Data</param>
+        /// <returns></returns>
+        [Route("RegisterOperator")]
+        [HttpPost]
+        public IActionResult RegisterOperator([FromBody] RegisterOperatorModel reqest)
+        {
+            var userOperator = _authService.RegisterOperator(reqest);
 
+
+            RegisterUserModel userCredentials = new RegisterUserModel();
+            userCredentials.PhoneNumber = reqest.PhoneNumber;
+            userCredentials.Email= reqest.Email;
+            userCredentials.Password= reqest.Password; 
+            userCredentials.Username= reqest.Username;
+            userCredentials.RepeatPassword= reqest.RepeatPassword;
+
+            var user = _authService.RegisterUser(userCredentials);
+
+            _emailService.SendActivationEmailOperator(user, userOperator);
+            return Ok();
+        }
+
+
+
+
+
+        /// <summary>
+        /// Activates user with given ID
+        /// </summary>
+        /// <param name="id">encrypted id passed in url</param>
+        /// <returns></returns>
         [Route("activate-user/{id}")]
         [HttpPost]
         public IActionResult ActivateUser([FromRoute] string id)
@@ -52,7 +90,12 @@ namespace FotoWorldBackend.Controllers
 
 
 
-
+        /// <summary>
+        /// Activates operator (and created with it user) with given ID
+        /// </summary>
+        /// <param name="operatorId">encrypted operator id passed in url</param>
+        /// <param name="userId">encrypted user id passed in url</param>
+        /// <returns></returns>
         [Route("activate-operator/{operatorId}/{userId}")]
         [HttpPost]
         public IActionResult ActivateOperator([FromRoute] string operatorId, string userId)

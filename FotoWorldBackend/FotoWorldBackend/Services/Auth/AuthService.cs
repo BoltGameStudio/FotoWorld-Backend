@@ -19,7 +19,7 @@ namespace FotoWorldBackend.Services.Auth
             
         }
 
-        //jezeli gosc jest operatorem to ma zwykle konto wiec go zalogujmy jako zwykle konto a potem mu zrobimy odpwiedni token na bazie tego co zaznaczy
+     
 
         public bool Login(LoginModel login)
         {

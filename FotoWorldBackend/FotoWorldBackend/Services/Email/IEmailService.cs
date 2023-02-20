@@ -7,5 +7,7 @@ namespace FotoWorldBackend.Services.Email
     {
         public void SendEmail(EmailModel request);
         public void SendActivationEmailUser(User user);
+
+        public void SendActivationEmailOperator(User user, Operator userOperator);
     }
 }
