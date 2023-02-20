@@ -1,4 +1,5 @@
 ﻿using FotoWorldBackend.Models;
+using FotoWorldBackend.Utilities;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
@@ -9,6 +10,7 @@ namespace FotoWorldBackend.Services.Email
     public class EmailService : IEmailService
     {
         private readonly IConfiguration _config;
+        private SymmetricEncryption _encryption = new SymmetricEncryption();
         public EmailService(IConfiguration config)
         {
             _config= config;
@@ -30,15 +32,17 @@ namespace FotoWorldBackend.Services.Email
         }
 
 
-        public void SendActivationEmail(User user)
+        public void SendActivationEmailUser(User user)
         {
             var email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse(_config.GetSection("EmailUsername").Value));
             email.To.Add(MailboxAddress.Parse(user.Email));
             email.Subject = "Account Activation";
 
+            var url = _config.GetValue<string>("Urls:BackendUrl") + "/activate-user/"+ _encryption.Encrypt(_config.GetSection("SECRET_KEY").Value, Convert.ToString(user.Id));
+
             //tutaj trzeba skleic ladnego urla
-            email.Body = new TextPart(TextFormat.Html) { Text = _config.GetValue<string>("Urls:BackendUrl") };
+            email.Body = new TextPart(TextFormat.Html) { Text = url };
 
             using var smtp = new SmtpClient();
             smtp.Connect(_config.GetSection("EmailHost").Value, Convert.ToInt32(_config.GetSection("EmailPort").Value), SecureSocketOptions.StartTls);

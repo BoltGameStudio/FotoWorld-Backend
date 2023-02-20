@@ -16,6 +16,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
+builder.Services.AddDbContext<FotoWorldContext>(options => options.UseSqlServer("name=ConnectionStrings:DevDatabase"));
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

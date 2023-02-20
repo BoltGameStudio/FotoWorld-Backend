@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace FotoWorldBackend.Models;
 
 public partial class FotoWorldContext : DbContext
 {
+
     public FotoWorldContext()
     {
     }
@@ -16,7 +19,7 @@ public partial class FotoWorldContext : DbContext
     {
     }
 
-    private readonly IConfiguration _config;
+
 
     public virtual DbSet<FollowedOffer> FollowedOffers { get; set; }
 
@@ -34,8 +37,7 @@ public partial class FotoWorldContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer(_config.GetSection("ConnectionStrings:DevDatabase").Value);
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

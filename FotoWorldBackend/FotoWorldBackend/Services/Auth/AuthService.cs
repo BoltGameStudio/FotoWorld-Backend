@@ -11,9 +11,10 @@ namespace FotoWorldBackend.Services.Auth
         private readonly FotoWorldContext _context;
         private PasswordHash _passwordHash;
         private readonly IEmailService _emailService;
-        public AuthService()
+
+        public AuthService(FotoWorldContext context)
         {
-            _context = new FotoWorldContext();
+            _context = context;
             _passwordHash = new PasswordHash();
             
         }
@@ -40,7 +41,7 @@ namespace FotoWorldBackend.Services.Auth
         {
             var newServices = new OperatorService();
             var newOperator = new Operator();
-            var newUser = new User();
+
 
             if (_context.Operators.FirstOrDefault(m => m.Email == register.Email) == null && _context.Users.FirstOrDefault(m => m.Email == register.Email) == null)
             {
@@ -70,15 +71,6 @@ namespace FotoWorldBackend.Services.Auth
                     _context.Operators.Add(newOperator);
                     _context.SaveChanges();
 
-
-                    newUser.Username = newOperator.Username;
-                    newUser.Email = newOperator.Email;
-                    newUser.PhoneNumber = newOperator.PhoneNumber;
-                    newUser.PasswordSalt = newOperator.PasswordSalt;
-                    newUser.HashedPassword = newOperator.HashedPassword;
-                    newUser.IsActice = false;
-                    _context.Users.Add(newUser);
-                    _context.SaveChanges();
                     return newOperator;
                 }
 
@@ -90,7 +82,7 @@ namespace FotoWorldBackend.Services.Auth
 
         public User RegisterUser(RegisterUserModel register)
         {
-            if (_context.Users.FirstOrDefault(m => m.Email == register.Email) == null)
+            if (_context.Operators.FirstOrDefault(m => m.Email == register.Email) == null && _context.Users.FirstOrDefault(m => m.Email == register.Email) == null)
             {
                 if (register.Password == register.RepeatPassword)
                 {
@@ -104,10 +96,6 @@ namespace FotoWorldBackend.Services.Auth
                     _context.Users.Add(newUser);
                     _context.SaveChanges();
 
-
-
-
-
                     return newUser;
                 }
 
@@ -117,11 +105,26 @@ namespace FotoWorldBackend.Services.Auth
         }
 
 
-        public bool ActivateAccount(int id) { 
+        public bool ActivateUser(int id) { 
             User userToActivate= _context.Users.FirstOrDefault(m=>m.Id== id);
             if (userToActivate != null)
             {
                 userToActivate.IsActice= true;
+                _context.SaveChanges();
+
+                return true;
+            }
+
+            return false;
+        }
+
+
+        public bool ActivateOperator(int id)
+        {
+            Operator operatorToActivate = _context.Operators.FirstOrDefault(m => m.Id == id);
+            if (operatorToActivate != null)
+            {
+                operatorToActivate.IsActice = true;
                 _context.SaveChanges();
 
                 return true;
