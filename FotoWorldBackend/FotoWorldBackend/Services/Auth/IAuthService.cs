@@ -5,7 +5,7 @@ namespace FotoWorldBackend.Services.Auth
 {
     public interface IAuthService
     {
-        bool Login(LoginModel login);
+        User LoginUser(LoginModel login);
 
         User RegisterUser(RegisterUserModel register);
 

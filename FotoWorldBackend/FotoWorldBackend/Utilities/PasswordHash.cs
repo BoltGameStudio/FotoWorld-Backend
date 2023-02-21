@@ -6,14 +6,14 @@ namespace FotoWorldBackend.Utilities
     /// <summary>
     /// All functionalities connected to password hashing
     /// </summary>
-    public class PasswordHash
+    public static class  PasswordHash
     {
 
         /// <summary>
         /// Generates Salt 
         /// </summary>
         /// <returns>salt</returns>
-        public string GenerateSalt()
+        public static string GenerateSalt()
         {
             byte[] salt = RandomNumberGenerator.GetBytes(128/8);
             return Convert.ToBase64String(salt);
@@ -25,7 +25,7 @@ namespace FotoWorldBackend.Utilities
         /// <param name="password">Password to hash</param>
         /// <param name="salt">Salt</param>
         /// <returns>Hashed Password</returns>
-        public string HashPassword(string password, string salt)
+        public static string HashPassword(string password, string salt)
         {
             string hashed= Convert.ToBase64String(KeyDerivation.Pbkdf2(
                 password: password,
@@ -43,7 +43,7 @@ namespace FotoWorldBackend.Utilities
         /// <param name="password">Password provided in login form</param>
         /// <param name="user">User found using username or email</param>
         /// <returns>True if password is correct</returns>
-        public bool VerifyPassword(string password, User user) {
+        public static bool VerifyPassword(string password, User user) {
             string test = HashPassword(password, user.PasswordSalt);
             if(test == user.HashedPassword)
             {

@@ -2,6 +2,7 @@
 using FotoWorldBackend.Services.Auth;
 using FotoWorldBackend.Services.Email;
 using FotoWorldBackend.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,13 +15,14 @@ namespace FotoWorldBackend.Controllers
         private readonly IEmailService _emailService;
         private readonly IAuthService _authService;
         private readonly IConfiguration _config;
-        private SymmetricEncryption _encryption = new SymmetricEncryption();
+        private TokenUtils _tokenUtils;
 
         public AuthController(IEmailService emailService, IAuthService authService, IConfiguration config)
         {
             _emailService = emailService;
             _authService = authService;
             _config = config;
+           
         }
 
 
@@ -29,6 +31,7 @@ namespace FotoWorldBackend.Controllers
         /// </summary>
         /// <param name="reqest">Register Data</param>
         /// <returns></returns>
+        [AllowAnonymous]
         [Route("Register")]
         [HttpPost]
         public IActionResult Register([FromBody] RegisterUserModel reqest)
@@ -44,6 +47,7 @@ namespace FotoWorldBackend.Controllers
         /// </summary>
         /// <param name="reqest">Register Data</param>
         /// <returns></returns>
+        [AllowAnonymous]
         [Route("RegisterOperator")]
         [HttpPost]
         public IActionResult RegisterOperator([FromBody] RegisterOperatorModel reqest)
@@ -73,13 +77,14 @@ namespace FotoWorldBackend.Controllers
         /// </summary>
         /// <param name="id">encrypted id passed in url</param>
         /// <returns></returns>
+        [AllowAnonymous]
         [Route("activate-user/{id}")]
         [HttpPost]
         public IActionResult ActivateUser([FromRoute] string id)
         {
             
 
-            var userIdDecrypted = _encryption.Decrypt(_config.GetSection("SECRET_KEY").Value, id);
+            var userIdDecrypted = SymmetricEncryption.Decrypt(_config.GetSection("SECRET_KEY").Value, id);
             var activated = _authService.ActivateUser(Convert.ToInt32(userIdDecrypted));
             if (activated)
             {
@@ -95,13 +100,14 @@ namespace FotoWorldBackend.Controllers
         /// </summary>
         /// <param name="operatorId">encrypted operator id passed in url</param>
         /// <param name="userId">encrypted user id passed in url</param>
-        /// <returns></returns>
+        /// <returns></returns>\
+        [AllowAnonymous]
         [Route("activate-operator/{operatorId}/{userId}")]
         [HttpPost]
         public IActionResult ActivateOperator([FromRoute] string operatorId, string userId)
         {
-            var operatorIdDecrypted = _encryption.Decrypt(_config.GetSection("SECRET_KEY").Value, operatorId);
-            var userIdDecrypted = _encryption.Decrypt(_config.GetSection("SECRET_KEY").Value, userId);
+            var operatorIdDecrypted = SymmetricEncryption.Decrypt(_config.GetSection("SECRET_KEY").Value, operatorId);
+            var userIdDecrypted = SymmetricEncryption.Decrypt(_config.GetSection("SECRET_KEY").Value, userId);
 
             var activatedOperator = _authService.ActivateOperator(Convert.ToInt32(operatorIdDecrypted));
             var activatedUser = _authService.ActivateUser(Convert.ToInt32(userIdDecrypted));
@@ -116,7 +122,18 @@ namespace FotoWorldBackend.Controllers
 
 
 
-
+        [AllowAnonymous]
+        [Route("Login")]
+        [HttpPost]
+        public IActionResult Login([FromBody] LoginModel login)
+        {
+            var user=_authService.LoginUser(login);
+            if(user != null)
+            {
+                return Ok(_tokenUtils.GenerateToken(user));
+            }
+            return NotFound();
+        }
 
 
         //TEST
@@ -127,7 +144,7 @@ namespace FotoWorldBackend.Controllers
         {
            
 
-            var ret = _encryption.Encrypt(_config.GetSection("SECRET_KEY").Value, text);
+            var ret = SymmetricEncryption.Encrypt(_config.GetSection("SECRET_KEY").Value, text);
 
             return Ok(ret);
         }
@@ -138,7 +155,7 @@ namespace FotoWorldBackend.Controllers
         {
             
 
-            var ret = _encryption.Decrypt(_config.GetSection("SECRET_KEY").Value, text);
+            var ret = SymmetricEncryption.Decrypt(_config.GetSection("SECRET_KEY").Value, text);
 
             return Ok(ret);
         }

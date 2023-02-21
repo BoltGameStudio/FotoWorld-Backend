@@ -9,19 +9,18 @@ namespace FotoWorldBackend.Services.Auth
     public class AuthService : IAuthService
     {
         private readonly FotoWorldContext _context;
-        private PasswordHash _passwordHash;
         private readonly IEmailService _emailService;
 
         public AuthService(FotoWorldContext context)
         {
             _context = context;
-            _passwordHash = new PasswordHash();
+            
             
         }
 
      
 
-        public bool Login(LoginModel login)
+        public User LoginUser(LoginModel login)
         {
 
 
@@ -30,12 +29,18 @@ namespace FotoWorldBackend.Services.Auth
             {
                 if(user.IsActice)
                 {
-                    return _passwordHash.VerifyPassword(login.Password, user);
+                    if(PasswordHash.VerifyPassword(login.Password, user))
+                    {
+                        return user;
+                    }
                 }
                 
             }
-            return false;
+            return null;
         }
+
+
+
 
         public Operator RegisterOperator(RegisterOperatorModel register)
         {
@@ -61,8 +66,8 @@ namespace FotoWorldBackend.Services.Auth
                     newOperator.Username = register.Username;
                     newOperator.Email = register.Email;
                     newOperator.PhoneNumber = register.PhoneNumber;
-                    newOperator.PasswordSalt = _passwordHash.GenerateSalt();
-                    newOperator.HashedPassword = _passwordHash.HashPassword(register.Password, newOperator.PasswordSalt);
+                    newOperator.PasswordSalt = PasswordHash.GenerateSalt();
+                    newOperator.HashedPassword = PasswordHash.HashPassword(register.Password, newOperator.PasswordSalt);
                     newOperator.Services = newServices.Id;
                     newOperator.IsCompany = register.IsCompany;
                     newOperator.LocationCity = register.LocationCity;
@@ -90,8 +95,8 @@ namespace FotoWorldBackend.Services.Auth
                     newUser.Username = register.Username;
                     newUser.Email = register.Email;
                     newUser.PhoneNumber = register.PhoneNumber;
-                    newUser.PasswordSalt = _passwordHash.GenerateSalt();
-                    newUser.HashedPassword = _passwordHash.HashPassword(register.Password, newUser.PasswordSalt);
+                    newUser.PasswordSalt = PasswordHash.GenerateSalt();
+                    newUser.HashedPassword = PasswordHash.HashPassword(register.Password, newUser.PasswordSalt);
                     newUser.IsActice = false;
                     _context.Users.Add(newUser);
                     _context.SaveChanges();

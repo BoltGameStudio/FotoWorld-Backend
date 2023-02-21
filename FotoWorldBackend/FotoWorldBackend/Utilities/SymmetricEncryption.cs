@@ -5,9 +5,16 @@ using System.Text;
 
 namespace FotoWorldBackend.Utilities
 {
-    public class SymmetricEncryption
+    public static class SymmetricEncryption
     {
-        public string Encrypt(string key, string text)
+
+        /// <summary>
+        /// Encrypts passed text 
+        /// </summary>
+        /// <param name="key">32 sign key</param>
+        /// <param name="text">Text to encrypt</param>
+        /// <returns>Cipher</returns>
+        public static string Encrypt(string key, string text)
         {
             byte[] iv = new byte[16];
             byte[] array;
@@ -36,8 +43,13 @@ namespace FotoWorldBackend.Utilities
 
 
 
-
-        public string Decrypt(string key, string cipher)
+        /// <summary>
+        /// Translates given cipher to plain text
+        /// </summary>
+        /// <param name="key">32 sign same as in encruption</param>
+        /// <param name="cipher">Cipher to translate</param>
+        /// <returns>Plain Text</returns>
+        public static string Decrypt(string key, string cipher)
         {
             byte[] iv = new byte[16];
             byte[] buffer = Convert.FromBase64String(cipher);

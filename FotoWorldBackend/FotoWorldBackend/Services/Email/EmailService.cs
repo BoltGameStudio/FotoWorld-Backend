@@ -10,7 +10,7 @@ namespace FotoWorldBackend.Services.Email
     public class EmailService : IEmailService
     {
         private readonly IConfiguration _config;
-        private SymmetricEncryption _encryption = new SymmetricEncryption();
+        
         public EmailService(IConfiguration config)
         {
             _config= config;
@@ -40,7 +40,7 @@ namespace FotoWorldBackend.Services.Email
             email.Subject = "Account Activation";
 
             var url = _config.GetValue<string>("Urls:BackendUrl") + "/activate-user/"+ 
-                _encryption.Encrypt(_config.GetSection("SECRET_KEY").Value, Convert.ToString(user.Id));
+                SymmetricEncryption.Encrypt(_config.GetSection("SECRET_KEY").Value, Convert.ToString(user.Id));
 
             //tutaj trzeba skleic ladnego urla
             email.Body = new TextPart(TextFormat.Html) { Text = url };
@@ -61,8 +61,8 @@ namespace FotoWorldBackend.Services.Email
             email.Subject = "Account Activation";
 
             var url = _config.GetValue<string>("Urls:BackendUrl") + "/activate-operator/" +
-                _encryption.Encrypt(_config.GetSection("SECRET_KEY").Value, Convert.ToString(userOperator.Id)) + "/"+
-                _encryption.Encrypt(_config.GetSection("SECRET_KEY").Value, Convert.ToString(user.Id));
+                SymmetricEncryption.Encrypt(_config.GetSection("SECRET_KEY").Value, Convert.ToString(userOperator.Id)) + "/"+
+                SymmetricEncryption.Encrypt(_config.GetSection("SECRET_KEY").Value, Convert.ToString(user.Id));
 
             //tutaj trzeba skleic ladnego urla
             email.Body = new TextPart(TextFormat.Html) { Text = url };
