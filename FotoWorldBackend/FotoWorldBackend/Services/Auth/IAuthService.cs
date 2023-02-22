@@ -11,5 +11,8 @@ namespace FotoWorldBackend.Services.Auth
 
         bool ActivateUser(int id);
 
+        User GetUserByMail(string email);
+
+        bool RestartPassword(int userID, string newPassword);
     }
 }

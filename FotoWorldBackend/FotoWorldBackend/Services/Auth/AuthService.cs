@@ -2,7 +2,9 @@
 using FotoWorldBackend.Services.Email;
 using FotoWorldBackend.Utilities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Win32;
 using System.Text.RegularExpressions;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace FotoWorldBackend.Services.Auth
 {
@@ -10,11 +12,11 @@ namespace FotoWorldBackend.Services.Auth
     {
         private readonly FotoWorldContext _context;
         private readonly IEmailService _emailService;
-
-        public AuthService(FotoWorldContext context)
+        private readonly IConfiguration _config;
+        public AuthService(FotoWorldContext context, IConfiguration config )
         {
             _context = context;
-
+            _config = config;
         }
 
 
@@ -94,5 +96,31 @@ namespace FotoWorldBackend.Services.Auth
             return false;
         }
 
+
+
+
+       public bool RestartPassword(int userID, string newPassword)
+       {
+            User user= _context.Users.FirstOrDefault(m=> m.Id== userID);
+            if(user != null)
+            {
+                user.PasswordSalt = PasswordHash.GenerateSalt();
+                user.HashedPassword = PasswordHash.HashPassword(newPassword, user.PasswordSalt);
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
+       }
+
+
+
+        public User GetUserByMail(string email) {
+            var user=_context.Users.FirstOrDefault(m => m.Email == email);
+            if (user != null)
+            {
+                return user;
+            }
+            return null;
+        }
     }
 }

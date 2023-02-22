@@ -81,6 +81,47 @@ namespace FotoWorldBackend.Controllers
             return NotFound();
         }
 
+        [AllowAnonymous]
+        [Route("ForgotPassword")]
+        [HttpPost]
+        public IActionResult ForgotPassword([FromBody] string email)
+        {
+            var res = _authService.GetUserByMail(email);
+            if(res != null)
+            {
+                _emailService.SendRestartPasswordEmail(res);
+                return Ok();
+            }
+            return NotFound();
+        }
+
+
+        [AllowAnonymous]
+        [Route("restart-password/{id}")]
+        [HttpPost]
+        public IActionResult RestartPassword([FromRoute] string id, [FromBody] RestartPasswordModel restart)
+        {
+
+            if(restart.NewPassword == restart.RepeatNewPassword)
+            {
+                var userIdDecrypted = SymmetricEncryption.Decrypt(_config.GetSection("SECRET_KEY").Value, id);
+                
+                var ret= _authService.RestartPassword(Convert.ToInt32(userIdDecrypted), restart.NewPassword);
+                if (ret)
+                {
+                    return Ok();
+                }
+                
+                
+            }
+            return BadRequest();
+           
+
+            
+            
+        }
+
+
 
         //TEST
 
