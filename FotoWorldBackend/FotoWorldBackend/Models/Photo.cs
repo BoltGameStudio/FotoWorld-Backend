@@ -9,5 +9,5 @@ public partial class Photo
 
     public string PhotoUrl { get; set; } = null!;
 
-    public virtual ICollection<OfferGallery> OfferGalleries { get; } = new List<OfferGallery>();
+    public virtual ICollection<OfferPhoto> OfferPhotos { get; } = new List<OfferPhoto>();
 }

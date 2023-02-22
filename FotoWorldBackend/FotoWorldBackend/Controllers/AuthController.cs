@@ -34,42 +34,12 @@ namespace FotoWorldBackend.Controllers
         [AllowAnonymous]
         [Route("Register")]
         [HttpPost]
-        public IActionResult Register([FromBody] RegisterUserModel reqest)
+        public IActionResult Register([FromBody] RegisterUserModel reqestUser)
         {
-            var user= _authService.RegisterUser(reqest);
+            var user= _authService.RegisterUser(reqestUser);
             _emailService.SendActivationEmailUser(user);
             return Ok();
         }
-
-
-        /// <summary>
-        /// Registers new user
-        /// </summary>
-        /// <param name="reqest">Register Data</param>
-        /// <returns></returns>
-        [AllowAnonymous]
-        [Route("RegisterOperator")]
-        [HttpPost]
-        public IActionResult RegisterOperator([FromBody] RegisterOperatorModel reqest)
-        {
-            var userOperator = _authService.RegisterOperator(reqest);
-
-
-            RegisterUserModel userCredentials = new RegisterUserModel();
-            userCredentials.PhoneNumber = reqest.PhoneNumber;
-            userCredentials.Email= reqest.Email;
-            userCredentials.Password= reqest.Password; 
-            userCredentials.Username= reqest.Username;
-            userCredentials.RepeatPassword= reqest.RepeatPassword;
-
-            var user = _authService.RegisterUser(userCredentials);
-
-            _emailService.SendActivationEmailOperator(user, userOperator);
-            return Ok();
-        }
-
-
-
 
 
         /// <summary>
@@ -94,30 +64,6 @@ namespace FotoWorldBackend.Controllers
         }
 
 
-
-        /// <summary>
-        /// Activates operator (and created with it user) with given ID
-        /// </summary>
-        /// <param name="operatorId">encrypted operator id passed in url</param>
-        /// <param name="userId">encrypted user id passed in url</param>
-        /// <returns></returns>\
-        [AllowAnonymous]
-        [Route("activate-operator/{operatorId}/{userId}")]
-        [HttpPost]
-        public IActionResult ActivateOperator([FromRoute] string operatorId, string userId)
-        {
-            var operatorIdDecrypted = SymmetricEncryption.Decrypt(_config.GetSection("SECRET_KEY").Value, operatorId);
-            var userIdDecrypted = SymmetricEncryption.Decrypt(_config.GetSection("SECRET_KEY").Value, userId);
-
-            var activatedOperator = _authService.ActivateOperator(Convert.ToInt32(operatorIdDecrypted));
-            var activatedUser = _authService.ActivateUser(Convert.ToInt32(userIdDecrypted));
-
-            if (activatedOperator && activatedUser)
-            {
-                return Ok(operatorIdDecrypted);
-            }
-            return BadRequest(operatorIdDecrypted);
-        }
 
 
 

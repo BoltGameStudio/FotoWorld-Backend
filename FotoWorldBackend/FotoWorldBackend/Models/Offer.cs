@@ -15,7 +15,7 @@ public partial class Offer
 
     public virtual ICollection<FollowedOffer> FollowedOffers { get; } = new List<FollowedOffer>();
 
-    public virtual ICollection<OfferGallery> OfferGalleries { get; } = new List<OfferGallery>();
+    public virtual ICollection<OfferPhoto> OfferPhotos { get; } = new List<OfferPhoto>();
 
     public virtual Operator Operator { get; set; } = null!;
 }
