@@ -13,7 +13,7 @@ public partial class OperatorRating
 
     public double Stars { get; set; }
 
-    public string? Comment { get; set; }
+    public string Comment { get; set; } = null!;
 
     public virtual Operator Operator { get; set; } = null!;
 

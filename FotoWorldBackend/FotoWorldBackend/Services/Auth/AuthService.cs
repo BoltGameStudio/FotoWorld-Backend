@@ -14,80 +14,31 @@ namespace FotoWorldBackend.Services.Auth
         public AuthService(FotoWorldContext context)
         {
             _context = context;
-            
-            
+
         }
 
-     
 
         public User LoginUser(LoginModel login)
         {
-
-
-            var user = _context.Users.FirstOrDefault(m => m.Email == login.Username ||m.Username==login.Username);
+            var user = _context.Users.FirstOrDefault(m => m.Email == login.Username || m.Username == login.Username);
             if (user != null)
             {
-                if(user.IsActice)
+                if (user.IsActive)
                 {
-                    if(PasswordHash.VerifyPassword(login.Password, user))
+                    if (PasswordHash.VerifyPassword(login.Password, user))
                     {
                         return user;
                     }
                 }
-                
+
             }
             return null;
         }
 
 
-
-
-        public Operator RegisterOperator(RegisterOperatorModel register)
-        {
-            var newServices = new OperatorService();
-            var newOperator = new Operator();
-
-
-            if (_context.Operators.FirstOrDefault(m => m.Email == register.Email) == null && _context.Users.FirstOrDefault(m => m.Email == register.Email) == null)
-            {
-
-                if (register.Password == register.RepeatPassword)
-                {
-
-
-                    newServices.DronePhoto = register.DronePhotoService;
-                    newServices.DroneFilm = register.DroneFilmService;
-                    newServices.Photo = register.PhotoService;
-                    newServices.Filming = register.FilmingService;
-                    _context.OperatorServices.Add(newServices);
-                    _context.SaveChanges();
-
-
-                    newOperator.Username = register.Username;
-                    newOperator.Email = register.Email;
-                    newOperator.PhoneNumber = register.PhoneNumber;
-                    newOperator.PasswordSalt = PasswordHash.GenerateSalt();
-                    newOperator.HashedPassword = PasswordHash.HashPassword(register.Password, newOperator.PasswordSalt);
-                    newOperator.Services = newServices.Id;
-                    newOperator.IsCompany = register.IsCompany;
-                    newOperator.LocationCity = register.LocationCity;
-                    newOperator.OperatingRadius = register.OperatingRadius;
-                    newOperator.IsActice = false;
-                    _context.Operators.Add(newOperator);
-                    _context.SaveChanges();
-
-                    return newOperator;
-                }
-
-
-            }
-
-            return null ;
-        }
-
         public User RegisterUser(RegisterUserModel register)
         {
-            if (_context.Operators.FirstOrDefault(m => m.Email == register.Email) == null && _context.Users.FirstOrDefault(m => m.Email == register.Email) == null)
+            if (_context.Users.FirstOrDefault(m => m.Email == register.Email) == null)
             {
                 if (register.Password == register.RepeatPassword)
                 {
@@ -97,9 +48,28 @@ namespace FotoWorldBackend.Services.Auth
                     newUser.PhoneNumber = register.PhoneNumber;
                     newUser.PasswordSalt = PasswordHash.GenerateSalt();
                     newUser.HashedPassword = PasswordHash.HashPassword(register.Password, newUser.PasswordSalt);
-                    newUser.IsActice = false;
+                    newUser.IsOperator = register.isOperator;
+                    newUser.IsActive = false;
                     _context.Users.Add(newUser);
                     _context.SaveChanges();
+
+                    if (newUser.IsOperator)
+                    {
+                        var newOperator = new Operator();
+                        newOperator.AccountId = newUser.Id;
+                        newOperator.IsCompany = register.IsCompany;
+                        newOperator.Availability = register.Availability;
+                        newOperator.LocationCity = register.LocationCity;
+                        newOperator.OperatingRadius = register.OperatingRadius;
+                        newOperator.Photo = register.PhotoService;
+                        newOperator.DronePhoto = register.DronePhotoService;
+                        newOperator.Filming = register.FilmingService;
+                        newOperator.DroneFilming = register.DroneFilmService;
+
+                        _context.Operators.Add(newOperator);
+                        _context.SaveChanges();
+
+                    }
 
                     return newUser;
                 }
@@ -110,11 +80,12 @@ namespace FotoWorldBackend.Services.Auth
         }
 
 
-        public bool ActivateUser(int id) { 
-            User userToActivate= _context.Users.FirstOrDefault(m=>m.Id== id);
+        public bool ActivateUser(int id)
+        {
+            User userToActivate = _context.Users.FirstOrDefault(m => m.Id == id);
             if (userToActivate != null)
             {
-                userToActivate.IsActice= true;
+                userToActivate.IsActive = true;
                 _context.SaveChanges();
 
                 return true;
@@ -123,19 +94,5 @@ namespace FotoWorldBackend.Services.Auth
             return false;
         }
 
-
-        public bool ActivateOperator(int id)
-        {
-            Operator operatorToActivate = _context.Operators.FirstOrDefault(m => m.Id == id);
-            if (operatorToActivate != null)
-            {
-                operatorToActivate.IsActice = true;
-                _context.SaveChanges();
-
-                return true;
-            }
-
-            return false;
-        }
     }
 }

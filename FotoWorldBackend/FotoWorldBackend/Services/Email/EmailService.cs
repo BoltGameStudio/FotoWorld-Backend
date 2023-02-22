@@ -53,28 +53,6 @@ namespace FotoWorldBackend.Services.Email
         }
 
 
-        public void SendActivationEmailOperator(User user, Operator userOperator) {
-
-            var email = new MimeMessage();
-            email.From.Add(MailboxAddress.Parse(_config.GetSection("EmailUsername").Value));
-            email.To.Add(MailboxAddress.Parse(user.Email));
-            email.Subject = "Account Activation";
-
-            var url = _config.GetValue<string>("Urls:BackendUrl") + "/activate-operator/" +
-                SymmetricEncryption.Encrypt(_config.GetSection("SECRET_KEY").Value, Convert.ToString(userOperator.Id)) + "/"+
-                SymmetricEncryption.Encrypt(_config.GetSection("SECRET_KEY").Value, Convert.ToString(user.Id));
-
-            //tutaj trzeba skleic ladnego urla
-            email.Body = new TextPart(TextFormat.Html) { Text = url };
-
-            using var smtp = new SmtpClient();
-            smtp.Connect(_config.GetSection("EmailHost").Value, Convert.ToInt32(_config.GetSection("EmailPort").Value), SecureSocketOptions.StartTls);
-            smtp.Authenticate(_config.GetSection("EmailUsername").Value, _config.GetSection("EmailPassword").Value);
-            smtp.Send(email);
-            smtp.Disconnect(true);
-
-
-        }
 
 
 
