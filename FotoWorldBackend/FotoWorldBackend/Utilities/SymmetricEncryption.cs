@@ -5,6 +5,9 @@ using System.Text;
 
 namespace FotoWorldBackend.Utilities
 {
+    /// <summary>
+    //  Symmetric Encryption services
+    /// </summary>
     public static class SymmetricEncryption
     {
 

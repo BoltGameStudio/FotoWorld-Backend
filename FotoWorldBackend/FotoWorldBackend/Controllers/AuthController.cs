@@ -31,7 +31,7 @@ namespace FotoWorldBackend.Controllers
         /// <summary>
         /// Registers new user
         /// </summary>
-        /// <param name="reqest">Register Data</param>
+        /// <param name="reqestUser">Register Data</param>
         /// <returns></returns>
         [AllowAnonymous]
         [Route("register")]
@@ -65,10 +65,6 @@ namespace FotoWorldBackend.Controllers
             return BadRequest(userIdDecrypted);
         }
 
-
-
-
-
         /// <summary>
         /// Log user in
         /// </summary>
@@ -90,8 +86,6 @@ namespace FotoWorldBackend.Controllers
             }
             return NotFound();
         }
-
-
 
 
         /// <summary>
@@ -138,10 +132,6 @@ namespace FotoWorldBackend.Controllers
                 
             }
             return BadRequest();
-           
-
-            
-            
         }
 
 
@@ -152,7 +142,6 @@ namespace FotoWorldBackend.Controllers
         [HttpPost]
         public IActionResult Encrypt([FromBody] string text)
         {
-           
 
             var ret = SymmetricEncryption.Encrypt(_config.GetSection("SECRET_KEY").Value, text);
 
@@ -163,29 +152,9 @@ namespace FotoWorldBackend.Controllers
         [HttpPost]
         public IActionResult Decrypt([FromBody] string text)
         {
-            
-
             var ret = SymmetricEncryption.Decrypt(_config.GetSection("SECRET_KEY").Value, text);
 
             return Ok(ret);
-        }
-
-
-        [Route("sentTestMail")]
-        [HttpPost]
-        public IActionResult SendMail([FromBody] EmailModel reqest)
-        {
-            _emailService.SendEmail(reqest);
-            return Ok();
-        }
-
-
-
-        [Route("connectionString")]
-        [HttpGet]
-        public IActionResult ConnectionString()
-        {
-            return Ok(_config.GetSection("DatabaseConnectionStrings:DevDatabase").Value);
-        }
+        }     
     }
 }

@@ -7,6 +7,9 @@ using MimeKit.Text;
 
 namespace FotoWorldBackend.Services.Email
 {
+    /// <summary>
+    /// Provides email sending for all controllers
+    /// </summary>
     public class EmailService : IEmailService
     {
         private readonly IConfiguration _config;

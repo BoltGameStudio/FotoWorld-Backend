@@ -8,6 +8,9 @@ using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace FotoWorldBackend.Services.Auth
 {
+    /// <summary>
+    /// Provides operations on database for auth controller
+    /// </summary>
     public class AuthService : IAuthService
     {
         private readonly FotoWorldContext _context;

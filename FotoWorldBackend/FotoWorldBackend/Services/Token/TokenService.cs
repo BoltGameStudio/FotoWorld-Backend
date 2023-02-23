@@ -6,6 +6,9 @@ using System.Text;
 
 namespace FotoWorldBackend.Services.Token
 {
+    /// <summary>
+    /// Provides JWT functionalities 
+    /// </summary>
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _config;
