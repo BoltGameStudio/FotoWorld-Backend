@@ -22,7 +22,7 @@ namespace FotoWorldBackend.Controllers
             _emailService = emailService;
             _authService = authService;
             _config = config;
-           
+            _tokenUtils = new TokenUtils(config);
         }
 
 
@@ -32,7 +32,7 @@ namespace FotoWorldBackend.Controllers
         /// <param name="reqest">Register Data</param>
         /// <returns></returns>
         [AllowAnonymous]
-        [Route("Register")]
+        [Route("register")]
         [HttpPost]
         public IActionResult Register([FromBody] RegisterUserModel reqestUser)
         {
@@ -69,7 +69,7 @@ namespace FotoWorldBackend.Controllers
 
 
         [AllowAnonymous]
-        [Route("Login")]
+        [Route("login")]
         [HttpPost]
         public IActionResult Login([FromBody] LoginModel login)
         {
@@ -82,7 +82,7 @@ namespace FotoWorldBackend.Controllers
         }
 
         [AllowAnonymous]
-        [Route("ForgotPassword")]
+        [Route("forgot-password")]
         [HttpPost]
         public IActionResult ForgotPassword([FromBody] string email)
         {
