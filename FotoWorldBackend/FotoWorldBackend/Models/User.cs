@@ -15,9 +15,15 @@ public partial class User
 
     public string Email { get; set; } = null!;
 
-    public string? PhoneNumber { get; set; }
+    public string PhoneNumber { get; set; } = null!;
+
+    public bool IsActive { get; set; }
+
+    public bool IsOperator { get; set; }
 
     public virtual ICollection<FollowedOffer> FollowedOffers { get; } = new List<FollowedOffer>();
 
     public virtual ICollection<OperatorRating> OperatorRatings { get; } = new List<OperatorRating>();
+
+    public virtual ICollection<Operator> Operators { get; } = new List<Operator>();
 }
