@@ -4,27 +4,29 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace FotoWorldBackend.Utilities
+namespace FotoWorldBackend.Services.Token
 {
-    public  class TokenUtils
+    public class TokenService : ITokenService
     {
         private readonly IConfiguration _config;
-
-        public TokenUtils(IConfiguration config)
+        public TokenService(IConfiguration config)
         {
-            _config=config;
+            _config = config;   
         }
 
-        public  string GenerateToken(User user) {
+        public string GenerateToken(User user, bool isOperator)
+        {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("SECRET_KEY").Value));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Email, user.Email)
-            };
+                new Claim("username", user.Username),
+                new Claim("email", user.Email),
+                new Claim("isOperator", Convert.ToString(isOperator))
 
+            };
+           
             string issuer = _config.GetSection("Urls:BackendUrl").Value;
             string audience = _config.GetSection("Urls:FrontendUrl").Value;
 
@@ -37,9 +39,6 @@ namespace FotoWorldBackend.Utilities
                 );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
-
         }
-
-
     }
 }

@@ -1,10 +1,12 @@
 ﻿using FotoWorldBackend.Models;
 using FotoWorldBackend.Services.Auth;
 using FotoWorldBackend.Services.Email;
+using FotoWorldBackend.Services.Token;
 using FotoWorldBackend.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.Eventing.Reader;
 
 namespace FotoWorldBackend.Controllers
 {
@@ -15,14 +17,14 @@ namespace FotoWorldBackend.Controllers
         private readonly IEmailService _emailService;
         private readonly IAuthService _authService;
         private readonly IConfiguration _config;
-        private TokenUtils _tokenUtils;
+        private readonly ITokenService _tokenService;
 
-        public AuthController(IEmailService emailService, IAuthService authService, IConfiguration config)
+        public AuthController(IEmailService emailService, IAuthService authService, IConfiguration config, ITokenService tokenService)
         {
             _emailService = emailService;
             _authService = authService;
             _config = config;
-            _tokenUtils = new TokenUtils(config);
+            _tokenService= tokenService;
         }
 
 
@@ -67,7 +69,11 @@ namespace FotoWorldBackend.Controllers
 
 
 
-
+        /// <summary>
+        /// Log user in
+        /// </summary>
+        /// <param name="login">login data</param>
+        /// <returns>token with respective claims</returns>
         [AllowAnonymous]
         [Route("login")]
         [HttpPost]
@@ -76,11 +82,23 @@ namespace FotoWorldBackend.Controllers
             var user=_authService.LoginUser(login);
             if(user != null)
             {
-                return Ok(_tokenUtils.GenerateToken(user));
+                if (!user.IsOperator && login.LoginAsOperator)
+                {
+                    return Unauthorized();
+                }
+                return Ok(_tokenService.GenerateToken(user, login.LoginAsOperator));
             }
             return NotFound();
         }
 
+
+
+
+        /// <summary>
+        /// Used to reset password, asks about email and sends confirmation
+        /// </summary>
+        /// <param name="email">email of account</param>
+        /// <returns></returns>
         [AllowAnonymous]
         [Route("forgot-password")]
         [HttpPost]
@@ -95,7 +113,12 @@ namespace FotoWorldBackend.Controllers
             return NotFound();
         }
 
-
+        /// <summary>
+        /// restarts passwords of user with passed id
+        /// </summary>
+        /// <param name="id">Taken from url</param>
+        /// <param name="restart">Restart password form</param>
+        /// <returns></returns>
         [AllowAnonymous]
         [Route("restart-password/{id}")]
         [HttpPost]
