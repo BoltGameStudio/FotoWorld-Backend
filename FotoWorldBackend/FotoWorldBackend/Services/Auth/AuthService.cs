@@ -1,4 +1,5 @@
 ﻿using FotoWorldBackend.Models;
+using FotoWorldBackend.Models.AuthModels;
 using FotoWorldBackend.Services.Email;
 using FotoWorldBackend.Utilities;
 using Microsoft.AspNetCore.Identity;
@@ -60,7 +61,7 @@ namespace FotoWorldBackend.Services.Auth
 
                     if (newUser.IsOperator)
                     {
-                        var newOperator = new Operator();
+                        var newOperator = new FotoWorldBackend.Models.Operator();
                         newOperator.AccountId = newUser.Id;
                         newOperator.IsCompany = register.IsCompany;
                         newOperator.Availability = register.Availability;

@@ -1,12 +1,10 @@
-﻿using FotoWorldBackend.Models;
+﻿using FotoWorldBackend.Models.AuthModels;
 using FotoWorldBackend.Services.Auth;
 using FotoWorldBackend.Services.Email;
 using FotoWorldBackend.Services.Token;
 using FotoWorldBackend.Utilities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics.Eventing.Reader;
 
 namespace FotoWorldBackend.Controllers
 {

@@ -1,4 +1,4 @@
-﻿namespace FotoWorldBackend.Models
+﻿namespace FotoWorldBackend.Models.AuthModels
 {
     public class LoginModel
     {
