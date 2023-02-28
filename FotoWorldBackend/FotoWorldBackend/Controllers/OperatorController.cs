@@ -18,9 +18,12 @@ namespace FotoWorldBackend.Controllers
         }
 
         [Route("create-offer")]
+        [Consumes("multipart/form-data", "application/json")]
         [HttpPost]
-        public IActionResult CreateOffer( [FromBody] IFormFile []files)
+        public IActionResult CreateOffer([FromForm]CreateOfferModel offer)
         {
+
+            _operatorService.UploadPhotos(offer);
             return Ok();
         }
 
