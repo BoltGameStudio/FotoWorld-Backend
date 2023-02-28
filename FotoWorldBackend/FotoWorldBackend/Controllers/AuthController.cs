@@ -34,7 +34,7 @@ namespace FotoWorldBackend.Controllers
         [AllowAnonymous]
         [Route("register")]
         [HttpPost]
-        public IActionResult Register([FromBody] RegisterUserModel reqestUser)
+        public IActionResult Register([FromForm] RegisterUserModel reqestUser)
         {
             var user= _authService.RegisterUser(reqestUser);
             _emailService.SendActivationEmailUser(user);
@@ -71,7 +71,7 @@ namespace FotoWorldBackend.Controllers
         [AllowAnonymous]
         [Route("login")]
         [HttpPost]
-        public IActionResult Login([FromBody] LoginModel login)
+        public IActionResult Login([FromForm] LoginModel login)
         {
             var user=_authService.LoginUser(login);
             if(user != null)
@@ -94,7 +94,7 @@ namespace FotoWorldBackend.Controllers
         [AllowAnonymous]
         [Route("forgot-password")]
         [HttpPost]
-        public IActionResult ForgotPassword([FromBody] string email)
+        public IActionResult ForgotPassword([FromForm] string email)
         {
             var res = _authService.GetUserByMail(email);
             if(res != null)
@@ -114,7 +114,7 @@ namespace FotoWorldBackend.Controllers
         [AllowAnonymous]
         [Route("restart-password/{id}")]
         [HttpPost]
-        public IActionResult RestartPassword([FromRoute] string id, [FromBody] RestartPasswordModel restart)
+        public IActionResult RestartPassword([FromRoute] string id, [FromForm] RestartPasswordModel restart)
         {
 
             if(restart.NewPassword == restart.RepeatNewPassword)
@@ -138,7 +138,7 @@ namespace FotoWorldBackend.Controllers
 
         [Route("Encrypt")]
         [HttpPost]
-        public IActionResult Encrypt([FromBody] string text)
+        public IActionResult Encrypt([FromForm] string text)
         {
 
             var ret = SymmetricEncryption.Encrypt(_config.GetSection("SECRET_KEY").Value, text);
@@ -148,7 +148,7 @@ namespace FotoWorldBackend.Controllers
 
         [Route("Decrypt")]
         [HttpPost]
-        public IActionResult Decrypt([FromBody] string text)
+        public IActionResult Decrypt([FromForm] string text)
         {
             var ret = SymmetricEncryption.Decrypt(_config.GetSection("SECRET_KEY").Value, text);
 

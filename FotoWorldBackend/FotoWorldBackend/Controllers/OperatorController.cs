@@ -1,5 +1,6 @@
 ﻿using FotoWorldBackend.Models.OperatorModels;
 using FotoWorldBackend.Services.Operator;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,9 +18,11 @@ namespace FotoWorldBackend.Controllers
             _operatorService = operatorService;
         }
 
+        
         [Route("create-offer")]
         [Consumes("multipart/form-data", "application/json")]
         [HttpPost]
+        [Authorize]
         public IActionResult CreateOffer([FromForm]CreateOfferModel offer)
         {
 

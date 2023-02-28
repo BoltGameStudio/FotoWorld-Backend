@@ -17,7 +17,9 @@ namespace FotoWorldBackend.Services.Operator
 
         public Offer CreateOffer(CreateOfferModel offer)
         {
-            throw new NotImplementedException();
+            var newOffer = new Offer();
+            return newOffer;
+            
         }
 
         public Offer UpdateOffer(CreateOfferModel offer)
@@ -34,7 +36,7 @@ namespace FotoWorldBackend.Services.Operator
                 string newFileName = Convert.ToString( Guid.NewGuid()) + Path.GetExtension(photo.FileName);
                 string filePath = Path.Combine(baseUrl, newFileName);
 
-                //zrobic zapisanie zdjecia
+              
 
                 try
                 {
