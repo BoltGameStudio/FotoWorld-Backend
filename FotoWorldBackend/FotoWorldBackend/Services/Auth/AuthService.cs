@@ -2,10 +2,7 @@
 using FotoWorldBackend.Models.AuthModels;
 using FotoWorldBackend.Services.Email;
 using FotoWorldBackend.Utilities;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Win32;
-using System.Text.RegularExpressions;
-using static Org.BouncyCastle.Math.EC.ECCurve;
+
 
 namespace FotoWorldBackend.Services.Auth
 {
