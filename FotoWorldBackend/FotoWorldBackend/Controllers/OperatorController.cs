@@ -3,6 +3,7 @@ using FotoWorldBackend.Services.Operator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace FotoWorldBackend.Controllers
 {
@@ -22,12 +23,18 @@ namespace FotoWorldBackend.Controllers
         [Route("create-offer")]
         [Consumes("multipart/form-data", "application/json")]
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Operator")]
         public IActionResult CreateOffer([FromForm]CreateOfferModel offer)
         {
-
-            _operatorService.UploadPhotos(offer);
-            return Ok();
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var claims = identity.Claims;
+            var id = claims.FirstOrDefault(o => o.Type == "id").Value;
+            var ret = _operatorService.CreateOffer(offer, id);
+            if(ret != null)
+            {
+                return Ok(ret);
+            }
+            return BadRequest();
         }
 
 

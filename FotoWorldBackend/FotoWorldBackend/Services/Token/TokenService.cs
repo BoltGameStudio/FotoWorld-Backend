@@ -28,7 +28,7 @@ namespace FotoWorldBackend.Services.Token
                 new Claim("id", SymmetricEncryption.Encrypt(_config["SECRET_KEY"],Convert.ToString(user.Id))),
                 new Claim("username", user.Username),
                 new Claim("email", user.Email),
-                new Claim("isOperator", Convert.ToString(isOperator))
+                new Claim(ClaimTypes.Role, isOperator? "Operator" : "User")
             };
 
             var token = new JwtSecurityToken(
