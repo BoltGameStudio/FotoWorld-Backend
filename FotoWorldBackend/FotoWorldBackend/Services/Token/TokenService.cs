@@ -25,7 +25,7 @@ namespace FotoWorldBackend.Services.Token
 
             var myClaims = new[]
             {
-                new Claim("id", SymmetricEncryption.Encrypt(_config.GetSection("SECRET_KEY").Value,Convert.ToString(user.Id))),
+                new Claim("id", SymmetricEncryption.Encrypt(_config["SECRET_KEY"],Convert.ToString(user.Id))),
                 new Claim("username", user.Username),
                 new Claim("email", user.Email),
                 new Claim("isOperator", Convert.ToString(isOperator))

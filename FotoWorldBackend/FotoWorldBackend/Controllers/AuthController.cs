@@ -54,7 +54,7 @@ namespace FotoWorldBackend.Controllers
         {
             
 
-            var userIdDecrypted = SymmetricEncryption.Decrypt(_config.GetSection("SECRET_KEY").Value, id);
+            var userIdDecrypted = SymmetricEncryption.Decrypt(_config["SECRET_KEY"], id);
             var activated = _authService.ActivateUser(Convert.ToInt32(userIdDecrypted));
             if (activated)
             {
@@ -119,7 +119,7 @@ namespace FotoWorldBackend.Controllers
 
             if(restart.NewPassword == restart.RepeatNewPassword)
             {
-                var userIdDecrypted = SymmetricEncryption.Decrypt(_config.GetSection("SECRET_KEY").Value, id);
+                var userIdDecrypted = SymmetricEncryption.Decrypt(_config["SECRET_KEY"], id);
                 
                 var ret= _authService.RestartPassword(Convert.ToInt32(userIdDecrypted), restart.NewPassword);
                 if (ret)
@@ -141,7 +141,7 @@ namespace FotoWorldBackend.Controllers
         public IActionResult Encrypt([FromForm] string text)
         {
 
-            var ret = SymmetricEncryption.Encrypt(_config.GetSection("SECRET_KEY").Value, text);
+            var ret = SymmetricEncryption.Encrypt(_config["SECRET_KEY"], text);
 
             return Ok(ret);
         }
@@ -150,7 +150,7 @@ namespace FotoWorldBackend.Controllers
         [HttpPost]
         public IActionResult Decrypt([FromForm] string text)
         {
-            var ret = SymmetricEncryption.Decrypt(_config.GetSection("SECRET_KEY").Value, text);
+            var ret = SymmetricEncryption.Decrypt(_config["SECRET_KEY"], text);
 
             return Ok(ret);
         }     
