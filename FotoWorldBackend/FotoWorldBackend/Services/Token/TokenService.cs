@@ -21,23 +21,24 @@ namespace FotoWorldBackend.Services.Token
         public string GenerateToken(User user, bool isOperator)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
 
-            var claims = new[]
+            var myClaims = new[]
             {
-                new Claim("id", SymmetricEncryption.Encrypt(_config.GetSection("SECRET_KEY").Value,Convert.ToString(user.Id))),
+                new Claim("id", SymmetricEncryption.Encrypt(_config["SECRET_KEY"],Convert.ToString(user.Id))),
                 new Claim("username", user.Username),
                 new Claim("email", user.Email),
                 new Claim("isOperator", Convert.ToString(isOperator))
             };
 
-            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
-              _config["Jwt:Audience"],
-              claims,
+            var token = new JwtSecurityToken(
+              claims: myClaims,
               expires: DateTime.Now.AddMinutes(15),
               signingCredentials: credentials);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            return jwt;
         }
     }
 }

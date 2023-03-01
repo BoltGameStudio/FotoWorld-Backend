@@ -30,7 +30,7 @@ namespace FotoWorldBackend.Services.Operator
         public List<int> UploadPhotos(CreateOfferModel offer)
         {
             var ret= new List<int>();
-            var baseUrl = _config.GetSection("UploadsDirectory").Value;
+            var baseUrl = _config["UploadsDirectory"];
             foreach (var photo in offer.Photos) {
 
                 string newFileName = Convert.ToString( Guid.NewGuid()) + Path.GetExtension(photo.FileName);
