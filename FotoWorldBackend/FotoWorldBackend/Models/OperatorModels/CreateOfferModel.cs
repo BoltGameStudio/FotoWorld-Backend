@@ -6,6 +6,6 @@
 
         public string Description { get; set; } 
 
-        public List<IFormFile> Photos { get; set; }
+        public List<IFormFile>? Photos { get; set; }
     }
 }

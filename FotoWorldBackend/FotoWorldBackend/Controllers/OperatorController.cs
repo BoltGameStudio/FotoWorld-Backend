@@ -44,18 +44,19 @@ namespace FotoWorldBackend.Controllers
         [Authorize(Roles = "Operator")]
         public IActionResult EditOffer([FromForm] CreateOfferModel offer, [FromRoute] int id)
         {
-
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             var claims = identity.Claims;
             var operatorId = claims.FirstOrDefault(o => o.Type == "id").Value;
 
+            
             var ret = _operatorService.UpdateOffer(offer, operatorId, id);
 
             if(ret != null)
             {
-                return Ok(ret);
+                return Ok(offer);
             }
             return BadRequest();
+            
         }
         
 
