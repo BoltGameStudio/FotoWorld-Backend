@@ -7,7 +7,7 @@ namespace FotoWorldBackend.Services.Operator
     {
         public Offer CreateOffer(CreateOfferModel offer, string authorId);
 
-        public Offer UpdateOffer(CreateOfferModel newOffer, int oldOfferId);
+        public Offer UpdateOffer(CreateOfferModel newOffer, string authorId, int oldOfferId);
 
         public List<int> UploadPhotos(CreateOfferModel offer);
     }

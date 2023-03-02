@@ -53,25 +53,38 @@ namespace FotoWorldBackend.Services.Operator
 
         }
 
-        public Offer UpdateOffer(CreateOfferModel newOffer, int oldOfferId)
+        public Offer UpdateOffer(CreateOfferModel newOffer, string authorId, int oldOfferId)
         {
             var oldOffer = _context.Offers.FirstOrDefault(m => m.Id == oldOfferId);
-
-            var photosID = UploadPhotos(newOffer);
-            if (photosID != null)
+            if(oldOffer == null)
             {
-                //usun wszystkie stare zdjecia
+                return null;
+            }
 
+            var authorOperator = _context.Operators.FirstOrDefault(m => m.AccountId == Convert.ToInt32(SymmetricEncryption.Decrypt(_config["SECRET_KEY"], authorId)));
+            if ( oldOffer.OperatorId != authorOperator.Id)
+            {
+                return null;
+            }
 
+            //if edit change photos then remove old and add newOnes
+            if (newOffer.Photos != null)
+            {
+                //upload new
+                var photosID = UploadPhotos(newOffer);
 
+                //remove old
+                var oldPhotos = _context.OfferPhotos.Where(m=> m.OfferId== oldOfferId).ToList();
+                foreach (var photoOffer in oldPhotos)
+                {
+                    var photo = _context.Photos.FirstOrDefault(m => m.Id == photoOffer.Id);
+                    _context.OfferPhotos.Remove(photoOffer);
+                    _context.Photos.Remove(photo);
+                    _context.SaveChanges() ;
+                    
+                }
 
-                oldOffer.Title = newOffer.Title;
-                oldOffer.Description = newOffer.Description;
-
-
-                _context.SaveChanges();
-
-
+                //connect new ones to offer
                 foreach (int id in photosID)
                 {
                     var offerPhoto = new OfferPhoto();
@@ -81,10 +94,19 @@ namespace FotoWorldBackend.Services.Operator
                     _context.OfferPhotos.Add(offerPhoto);
                     _context.SaveChanges();
                 }
-                return oldOffer;
+
             }
 
-            return null;
+            //update text
+            oldOffer.Title = newOffer.Title;
+            oldOffer.Description = newOffer.Description;
+
+
+            _context.SaveChanges();
+
+
+
+            return oldOffer;
         }
 
         public List<int> UploadPhotos(CreateOfferModel offer)

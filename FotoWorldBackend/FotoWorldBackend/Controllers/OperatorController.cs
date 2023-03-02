@@ -38,5 +38,26 @@ namespace FotoWorldBackend.Controllers
         }
 
 
+        [Route("edit-offer/{id}")]
+        [Consumes("multipart/form-data", "application/json")]
+        [HttpPut]
+        [Authorize(Roles = "Operator")]
+        public IActionResult EditOffer([FromForm] CreateOfferModel offer, [FromRoute] int id)
+        {
+
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var claims = identity.Claims;
+            var operatorId = claims.FirstOrDefault(o => o.Type == "id").Value;
+
+            var ret = _operatorService.UpdateOffer(offer, operatorId, id);
+
+            if(ret != null)
+            {
+                return Ok(ret);
+            }
+            return BadRequest();
+        }
+        
+
     }
 }
