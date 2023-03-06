@@ -35,9 +35,16 @@ namespace FotoWorldBackend.Services.Operator
                 newOffer.Title= offer.Title;
                 newOffer.Description = offer.Description;
 
-                _context.Offers.Add(newOffer);
-                _context.SaveChanges();
 
+                try
+                {
+                    _context.Offers.Add(newOffer);
+                }
+                catch(Exception ex) {
+                    Console.WriteLine("Error while createing offer in context\n" + ex.ToString());
+                    return null;
+                }
+                
                 try
                 {
                     foreach (int id in photosID)
@@ -47,20 +54,88 @@ namespace FotoWorldBackend.Services.Operator
                         offerPhoto.PhotoId = id;
 
                         _context.OfferPhotos.Add(offerPhoto);
-                        _context.SaveChanges();
+                        
                     }
                 }catch(Exception ex)
                 {
-                    Console.WriteLine(ex.ToString());
+                    Console.WriteLine("Error while connecting photos to offer\n"+ex.ToString());
+                    return null;
                 }
 
-
-
-
+                try
+                {
+                    _context.SaveChanges();
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine("Error while saving new offer to database\n"+ex.ToString());
+                    return null;
+                }
+                
                 return newOffer;
             }
+            Console.WriteLine("No photos included");
             return null;
 
+        }
+
+        public bool RemoveOffer(int offerId, string authorId)
+        {
+            var offerToRemove = _context.Offers.FirstOrDefault(m => m.Id == offerId);
+            if (offerToRemove == null)
+            {
+                return false;
+            }
+
+            var authorIdDecypher = Convert.ToInt32(SymmetricEncryption.Decrypt(_config["SECRET_KEY"], authorId));
+            var authorOperator = _context.Operators.FirstOrDefault(m => m.AccountId == authorIdDecypher);
+
+            if (offerToRemove.OperatorId != authorOperator.Id)
+            {
+                return false;
+            }
+
+
+            var oldPhotos = _context.OfferPhotos.Where(m => m.OfferId == offerId).ToList();
+            foreach (var photoOffer in oldPhotos)
+            {
+                try
+                {
+                    var photo = _context.Photos.FirstOrDefault(m => m.Id == photoOffer.Id);
+                    _context.OfferPhotos.Remove(photoOffer);
+                    _context.Photos.Remove(photo);
+                }
+                catch(Exception ex ) { 
+                    Console.WriteLine("Error while removing photos\n"+ex.ToString());
+                    return false;
+                }
+
+            }
+
+            try
+            {
+                _context.Offers.Remove(offerToRemove);
+            }catch(Exception ex) { 
+                
+                Console.WriteLine("Error while removing offer\n"+ex.ToString());
+                return false;
+            }
+
+
+
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch
+            (Exception ex)
+            {
+                Console.WriteLine("Error while saving changes in removing offer\n"+ex.ToString());
+                return false;
+            }
+            
+
+            return true;
         }
 
         public Offer UpdateOffer(CreateOfferModel newOffer, string authorId, int oldOfferId)
@@ -76,45 +151,74 @@ namespace FotoWorldBackend.Services.Operator
 
             if ( oldOffer.OperatorId != authorOperator.Id)
             {
+                Console.WriteLine("Incorrect Operator");
                 return null;
             }
 
             //if edit change photos then remove old and add newOnes
             if (newOffer.Photos != null)
             {
-
-                //remove old
-                var oldPhotos = _context.OfferPhotos.Where(m=> m.OfferId== oldOfferId).ToList();
-                foreach (var photoOffer in oldPhotos)
+                try
                 {
-                    var photo = _context.Photos.FirstOrDefault(m => m.Id == photoOffer.Id);
-                    _context.OfferPhotos.Remove(photoOffer);
-                    _context.Photos.Remove(photo);
-                    _context.SaveChanges() ;
-                    
+                    //remove old photos
+                    var oldPhotos = _context.OfferPhotos.Where(m => m.OfferId == oldOfferId).ToList();
+                    foreach (var photoOffer in oldPhotos)
+                    {
+                        var photo = _context.Photos.FirstOrDefault(m => m.Id == photoOffer.Id);
+                        _context.OfferPhotos.Remove(photoOffer);
+                        _context.Photos.Remove(photo);
+
+
+                    }
                 }
+                catch  (Exception ex) { 
+                    Console.WriteLine("Error while removing old photos\n"+ex.ToString());
+                    return null;
+                }
+
 
                 //upload new photos
                 var photosID = UploadPhotos(newOffer);
-
-                //connect new ones to offer
-                foreach (int id in photosID)
+                if(photosID== null)
                 {
-                    var offerPhoto = new OfferPhoto();
-                    offerPhoto.OfferId = oldOfferId;
-                    offerPhoto.PhotoId = id;
-
-                    _context.OfferPhotos.Add(offerPhoto);
-                    _context.SaveChanges();
+                    Console.WriteLine("No edited photos\n");
+                    return null;
                 }
+
+                try
+                {
+                    //connect new ones to offer
+                    foreach (int id in photosID)
+                    {
+                        var offerPhoto = new OfferPhoto();
+                        offerPhoto.OfferId = oldOfferId;
+                        offerPhoto.PhotoId = id;
+
+                        _context.OfferPhotos.Add(offerPhoto);
+
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine("Error while connecting photos to offer\n"+ex.ToString());
+                    return null;
+                }
+
 
             }
 
             //update text
             oldOffer.Title = newOffer.Title;
             oldOffer.Description = newOffer.Description;
-
-            _context.SaveChanges();
+            try
+            {
+                _context.SaveChanges();
+            } catch(Exception ex)
+            {
+                Console.WriteLine("Error while saving edited offer\n"+ex.ToString());
+                return null;
+            }
+            
             return oldOffer;
         }
 
@@ -134,19 +238,33 @@ namespace FotoWorldBackend.Services.Operator
                         photo.CopyTo(stream);
                     }
                 }catch(Exception ex) { 
-                    Console.WriteLine(ex.ToString());
+                    Console.WriteLine("Error while uploading photos\n"+ex.ToString());
                     return null;
                 }
 
                 var databasePhoto = new Photo();
                 databasePhoto.PhotoUrl = filePath;
-
-                _context.Photos.Add(databasePhoto);
-                _context.SaveChanges();
+                try
+                {
+                    _context.Photos.Add(databasePhoto);
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine("Error while adding photos to database\n"+ex.ToString());
+                    return null;
+                }
                 
                 ret.Add(databasePhoto.Id);
             }
+            try
+            {
+                _context.SaveChanges();
 
+            }catch(Exception ex)
+            {
+                Console.WriteLine("Error while saving photos in database\n"+ex.ToString());
+                return null;
+            }
             return ret;
 
         }

@@ -1,4 +1,5 @@
-﻿using FotoWorldBackend.Models.OperatorModels;
+﻿using FotoWorldBackend.Models;
+using FotoWorldBackend.Models.OperatorModels;
 using FotoWorldBackend.Services.Operator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -40,7 +41,7 @@ namespace FotoWorldBackend.Controllers
 
         [Route("edit-offer/{id}")]
         [Consumes("multipart/form-data", "application/json")]
-        [HttpPut]
+        [HttpPost]
         [Authorize(Roles = "Operator")]
         public IActionResult EditOffer([FromForm] CreateOfferModel offer, [FromRoute] int id)
         {
@@ -58,7 +59,25 @@ namespace FotoWorldBackend.Controllers
             return BadRequest();
             
         }
-        
 
+        [Route("remove-offer/{id}")]
+        [Consumes("multipart/form-data", "application/json")]
+        [HttpDelete]
+        [Authorize(Roles = "Operator")]
+        public IActionResult RemoveOffer([FromRoute] int id)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var claims = identity.Claims;
+            var operatorId = claims.FirstOrDefault(o => o.Type == "id").Value;
+
+
+            var ret = _operatorService.RemoveOffer(id, operatorId);
+
+            if (ret)
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
     }
 }
