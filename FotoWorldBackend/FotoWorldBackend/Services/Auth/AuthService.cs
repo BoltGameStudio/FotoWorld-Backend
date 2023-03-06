@@ -1,10 +1,8 @@
 ﻿using FotoWorldBackend.Models;
+using FotoWorldBackend.Models.AuthModels;
 using FotoWorldBackend.Services.Email;
 using FotoWorldBackend.Utilities;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Win32;
-using System.Text.RegularExpressions;
-using static Org.BouncyCastle.Math.EC.ECCurve;
+
 
 namespace FotoWorldBackend.Services.Auth
 {
@@ -48,34 +46,63 @@ namespace FotoWorldBackend.Services.Auth
                 if (register.Password == register.RepeatPassword)
                 {
                     var newUser = new User();
-                    newUser.Username = register.Username;
-                    newUser.Email = register.Email;
-                    newUser.PhoneNumber = register.PhoneNumber;
-                    newUser.PasswordSalt = PasswordHash.GenerateSalt();
-                    newUser.HashedPassword = PasswordHash.HashPassword(register.Password, newUser.PasswordSalt);
-                    newUser.IsOperator = register.isOperator;
-                    newUser.IsActive = false;
-                    _context.Users.Add(newUser);
-                    _context.SaveChanges();
+                    try
+                    {
+                        
+                        newUser.Username = register.Username;
+                        newUser.Email = register.Email;
+                        newUser.PhoneNumber = register.PhoneNumber;
+                        newUser.PasswordSalt = PasswordHash.GenerateSalt();
+                        newUser.HashedPassword = PasswordHash.HashPassword(register.Password, newUser.PasswordSalt);
+                        newUser.IsOperator = register.isOperator;
+                        newUser.IsActive = false;
+                        _context.Users.Add(newUser);
+                    }
+                    catch(Exception ex) 
+                    {
+                        Console.WriteLine("Error while creating new user\n"+ex.ToString());
+                        return null;
+                    }
+
+                    
 
                     if (newUser.IsOperator)
                     {
-                        var newOperator = new Operator();
-                        newOperator.AccountId = newUser.Id;
-                        newOperator.IsCompany = register.IsCompany;
-                        newOperator.Availability = register.Availability;
-                        newOperator.LocationCity = register.LocationCity;
-                        newOperator.OperatingRadius = register.OperatingRadius;
-                        newOperator.Photo = register.PhotoService;
-                        newOperator.DronePhoto = register.DronePhotoService;
-                        newOperator.Filming = register.FilmingService;
-                        newOperator.DroneFilming = register.DroneFilmService;
+                        var newOperator = new FotoWorldBackend.Models.Operator();
+                        try
+                        {
+                            
+                            newOperator.AccountId = newUser.Id;
+                            newOperator.IsCompany = register.IsCompany;
+                            newOperator.Availability = register.Availability;
+                            newOperator.LocationCity = register.LocationCity;
+                            newOperator.OperatingRadius = register.OperatingRadius;
+                            newOperator.Photo = register.PhotoService;
+                            newOperator.DronePhoto = register.DronePhotoService;
+                            newOperator.Filming = register.FilmingService;
+                            newOperator.DroneFilming = register.DroneFilmService;
 
-                        _context.Operators.Add(newOperator);
-                        _context.SaveChanges();
+                            _context.Operators.Add(newOperator);
+                        }
+                        catch(Exception ex)
+                        {
+                            Console.WriteLine("Error while creating new operator\n"+ex.ToString());
+                            return null;
+                        }
+
+                        
 
                     }
 
+                    try
+                    {
+                        _context.SaveChanges();
+                    }catch(Exception ex)
+                    {
+                        Console.WriteLine("Error while saving new user to database\n"+ex.ToString());
+                        return null;
+                    }
+                    
                     return newUser;
                 }
 
@@ -90,8 +117,16 @@ namespace FotoWorldBackend.Services.Auth
             User userToActivate = _context.Users.FirstOrDefault(m => m.Id == id);
             if (userToActivate != null)
             {
-                userToActivate.IsActive = true;
-                _context.SaveChanges();
+                try
+                {
+                    userToActivate.IsActive = true;
+                    _context.SaveChanges();
+
+                }catch(Exception ex)
+                {
+                    Console.WriteLine("Error while activating user\n"+ex.ToString());
+                    return false;
+                }
 
                 return true;
             }
@@ -107,9 +142,16 @@ namespace FotoWorldBackend.Services.Auth
             User user= _context.Users.FirstOrDefault(m=> m.Id== userID);
             if(user != null)
             {
-                user.PasswordSalt = PasswordHash.GenerateSalt();
-                user.HashedPassword = PasswordHash.HashPassword(newPassword, user.PasswordSalt);
-                _context.SaveChanges();
+                try
+                {
+                    user.PasswordSalt = PasswordHash.GenerateSalt();
+                    user.HashedPassword = PasswordHash.HashPassword(newPassword, user.PasswordSalt);
+                    _context.SaveChanges();
+                }catch(Exception ex) { 
+                    Console.WriteLine("Error while changing user password\n"+ex.ToString());
+                    return false;   
+                }
+
                 return true;
             }
             return false;

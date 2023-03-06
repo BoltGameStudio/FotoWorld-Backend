@@ -1,5 +1,5 @@
 ﻿using FotoWorldBackend.Models;
-
+using FotoWorldBackend.Models.AuthModels;
 
 namespace FotoWorldBackend.Services.Auth
 {
