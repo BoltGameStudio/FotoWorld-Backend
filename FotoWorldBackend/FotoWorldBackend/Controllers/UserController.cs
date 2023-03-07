@@ -14,5 +14,21 @@ namespace FotoWorldBackend.Controllers
         {
             _userService = userService;
         }
+
+        [Route("get-offer-detailed/{id}")]
+        [HttpGet]
+        public IActionResult GetOfferDetailed([FromRoute] int id)
+        {
+            var ret = _userService.GetOfferDetailed(id);
+            return Ok(ret);
+
+        }
+
+        [Route("get-image/{id}")]
+        [HttpGet]
+        public IActionResult GetImage(int id) { 
+        
+            return File(_userService.GetImageById(id), "image/*");
+        }
     }
 }

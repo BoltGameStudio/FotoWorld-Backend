@@ -168,7 +168,7 @@ namespace FotoWorldBackend.Services.Operator
                         _context.OfferPhotos.Remove(photoOffer);
                         _context.Photos.Remove(photo);
 
-
+                        //z dysku je usun
                     }
                 }
                 catch  (Exception ex) { 

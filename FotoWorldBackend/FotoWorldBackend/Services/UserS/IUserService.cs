@@ -1,13 +1,14 @@
 ﻿using FotoWorldBackend.Models;
 using FotoWorldBackend.Models.UserModels;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FotoWorldBackend.Services.UserS
 {
     public interface IUserService
     {
-        public Offer GetOfferDetailed(int offerId);
+        public OfferWithPhotos GetOfferDetailed(int offerId);
 
-        public List<Offer> GetOfferList();
+        public List<OfferListObject> GetOfferList();
 
         public bool AddOfferToFavourite(int offerId, string userId);
 
@@ -17,5 +18,6 @@ namespace FotoWorldBackend.Services.UserS
 
         public bool RemoveOperatorOpinion(CreateOperatorOpinionModel opinion);
 
+        FileStream GetImageById(int id);
     }
 }
