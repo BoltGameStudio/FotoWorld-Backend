@@ -14,7 +14,7 @@ namespace FotoWorldBackend.Services.UserS
 
         public bool RemoveOfferFromFavourite(int offerId, string userId);
 
-        public bool CreateOperatorOpinion(CreateOperatorOpinionModel opinion);
+        public bool CreateOperatorOpinion(CreateOperatorOpinionModel opinion, int offerId, string userId);
 
         public bool RemoveOperatorOpinion(CreateOperatorOpinionModel opinion);
 

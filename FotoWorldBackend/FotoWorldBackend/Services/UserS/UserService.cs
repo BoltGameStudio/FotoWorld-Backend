@@ -1,6 +1,7 @@
 ﻿using FotoWorldBackend.Models;
 using FotoWorldBackend.Models.UserModels;
 using FotoWorldBackend.Services.Email;
+using FotoWorldBackend.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FotoWorldBackend.Services.UserS
@@ -19,19 +20,73 @@ namespace FotoWorldBackend.Services.UserS
 
         public bool AddOfferToFavourite(int offerId, string userId)
         {
-            throw new NotImplementedException();
+
+            try
+            {
+                var userToFavourite = _context.Users.FirstOrDefault(m => m.Id == Convert.ToInt32(SymmetricEncryption.Decrypt(_config["SECRET_KEY"], userId)));
+                if(userToFavourite == null)
+                {
+                    return false;
+                }
+                var followed = new FollowedOffer
+                {
+                    OfferId = offerId,
+                    UserId = userToFavourite.Id
+                };
+
+                _context.FollowedOffers.Add(followed);
+                _context.SaveChanges();
+                return true;
+            } catch(Exception ex)
+            {
+                Console.WriteLine("Error while adding offer to favourites\n"+ex.ToString());
+                return false;   
+            }
+
         }
 
-        public bool CreateOperatorOpinion(CreateOperatorOpinionModel opinion)
+        public bool CreateOperatorOpinion(CreateOperatorOpinionModel opinion, int offerId, string userId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var offer = _context.Offers.FirstOrDefault(m => m.Id == offerId);
+                var userToFavourite = _context.Users.FirstOrDefault(m => m.Id == Convert.ToInt32(SymmetricEncryption.Decrypt(_config["SECRET_KEY"], userId)));
+                if (offer == null || userToFavourite == null)
+                {
+                    return false;
+                }
+                var review = new FollowedOffer
+                {
+                    OfferId = offerId,
+                    UserId = userToFavourite.Id
+
+                };
+
+                _context.FollowedOffers.Add(review);
+                _context.SaveChanges();
+                return true;
+            }catch(Exception ex)
+            {
+                Console.WriteLine("Error while leaving operator review\n"+ex.ToString());
+                return false;
+            }
+
         }
 
         public FileStream GetImageById(int id)
         {
-            var photo = _context.Photos.FirstOrDefault(m=>m.Id == id);
-            var image = System.IO.File.OpenRead(photo.PhotoUrl);
-            return image;
+            try
+            {
+                var photo = _context.Photos.FirstOrDefault(m => m.Id == id);
+                var image = System.IO.File.OpenRead(photo.PhotoUrl);
+                return image;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error while getting image\n"+ex.Message);
+                return null;
+            }
+
         }
 
         public OfferWithPhotos GetOfferDetailed(int offerId)
@@ -71,6 +126,9 @@ namespace FotoWorldBackend.Services.UserS
                 OfferId = offerId
             
             };
+
+
+
 
             return ret;
 
@@ -112,7 +170,10 @@ namespace FotoWorldBackend.Services.UserS
 
         public bool RemoveOfferFromFavourite(int offerId, string userId)
         {
+            var offer = _context.Offers.FirstOrDefault(m => m.Id == offerId);
+            var userToFavourite = _context.Users.FirstOrDefault(m => m.Id == Convert.ToInt32(SymmetricEncryption.Decrypt(_config["SECRET_KEY"], userId)));
             throw new NotImplementedException();
+
         }
 
         public bool RemoveOperatorOpinion(CreateOperatorOpinionModel opinion)
