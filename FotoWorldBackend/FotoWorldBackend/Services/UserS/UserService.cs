@@ -50,19 +50,30 @@ namespace FotoWorldBackend.Services.UserS
             try
             {
                 var offer = _context.Offers.FirstOrDefault(m => m.Id == offerId);
-                var userToFavourite = _context.Users.FirstOrDefault(m => m.Id == Convert.ToInt32(SymmetricEncryption.Decrypt(_config["SECRET_KEY"], userId)));
-                if (offer == null || userToFavourite == null)
+                var reviewer = _context.Users.FirstOrDefault(m => m.Id == Convert.ToInt32(SymmetricEncryption.Decrypt(_config["SECRET_KEY"], userId)));
+                if (offer == null || reviewer == null)
                 {
                     return false;
                 }
-                var review = new FollowedOffer
+
+                var checkIfExist = _context.OperatorRatings.FirstOrDefault(m => m.UserId == reviewer.Id && m.OperatorId == offer.OperatorId);
+                if(checkIfExist != null)
                 {
-                    OfferId = offerId,
-                    UserId = userToFavourite.Id
+                    Console.WriteLine("This user already left an opinion");
+                    return false;
+                }
+
+
+                var review = new OperatorRating
+                {
+                    Stars = opinion.Stars,
+                    Comment = opinion.Comment,
+                    UserId = reviewer.Id,
+                    OperatorId = offer.OperatorId
 
                 };
 
-                _context.FollowedOffers.Add(review);
+                _context.OperatorRatings.Add(review);
                 _context.SaveChanges();
                 return true;
             }catch(Exception ex)
@@ -128,8 +139,6 @@ namespace FotoWorldBackend.Services.UserS
             };
 
 
-
-
             return ret;
 
         }
@@ -170,15 +179,57 @@ namespace FotoWorldBackend.Services.UserS
 
         public bool RemoveOfferFromFavourite(int offerId, string userId)
         {
-            var offer = _context.Offers.FirstOrDefault(m => m.Id == offerId);
-            var userToFavourite = _context.Users.FirstOrDefault(m => m.Id == Convert.ToInt32(SymmetricEncryption.Decrypt(_config["SECRET_KEY"], userId)));
-            throw new NotImplementedException();
+
+            try
+            {
+                var offer = _context.Offers.FirstOrDefault(m => m.Id == offerId);
+                var userToFavourite = _context.Users.FirstOrDefault(m => m.Id == Convert.ToInt32(SymmetricEncryption.Decrypt(_config["SECRET_KEY"], userId)));
+
+                var favourite = _context.FollowedOffers.FirstOrDefault(m => m.OfferId == offer.Id && m.UserId == userToFavourite.Id);
+                if (favourite == null)
+                {
+                    return false;
+                }
+
+                _context.FollowedOffers.Remove(favourite);
+                _context.SaveChanges();
+                return true;
+            } catch(Exception ex)
+            {
+                Console.WriteLine("Error while removing offer from followed\n"+ex.Message);
+                return false;
+            }
+
 
         }
 
-        public bool RemoveOperatorOpinion(CreateOperatorOpinionModel opinion)
+        public bool RemoveOperatorOpinion(int offerId, string userId)
         {
-            throw new NotImplementedException();
+
+            try
+            {
+                var offer = _context.Offers.FirstOrDefault(m => m.Id == offerId);
+                var reviewer = _context.Users.FirstOrDefault(m => m.Id == Convert.ToInt32(SymmetricEncryption.Decrypt(_config["SECRET_KEY"], userId)));
+
+                var review = _context.OperatorRatings.FirstOrDefault(m => m.UserId == reviewer.Id && m.OperatorId == offer.OperatorId);
+
+                if (review == null)
+                {
+                    return false;
+                }
+
+
+                _context.OperatorRatings.Remove(review);
+                _context.SaveChanges();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error while removing operator review\n"+ex.Message);
+                return false;
+            }
+
+
         }
     }
 }

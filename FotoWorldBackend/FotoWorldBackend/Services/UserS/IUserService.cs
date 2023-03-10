@@ -16,7 +16,7 @@ namespace FotoWorldBackend.Services.UserS
 
         public bool CreateOperatorOpinion(CreateOperatorOpinionModel opinion, int offerId, string userId);
 
-        public bool RemoveOperatorOpinion(CreateOperatorOpinionModel opinion);
+        public bool RemoveOperatorOpinion(int offerId, string userId);
 
         FileStream GetImageById(int id);
     }
