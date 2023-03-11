@@ -102,6 +102,9 @@ namespace FotoWorldBackend.Services.Operator
                 try
                 {
                     var photo = _context.Photos.FirstOrDefault(m => m.Id == photoOffer.Id);
+
+                    File.Delete(photo.PhotoUrl);
+
                     _context.OfferPhotos.Remove(photoOffer);
                     _context.Photos.Remove(photo);
                 }
@@ -165,10 +168,13 @@ namespace FotoWorldBackend.Services.Operator
                     foreach (var photoOffer in oldPhotos)
                     {
                         var photo = _context.Photos.FirstOrDefault(m => m.Id == photoOffer.Id);
+
+                        File.Delete(photo.PhotoUrl);
+
                         _context.OfferPhotos.Remove(photoOffer);
                         _context.Photos.Remove(photo);
 
-                        //z dysku je usun
+                        
                     }
                 }
                 catch  (Exception ex) { 
@@ -235,7 +241,7 @@ namespace FotoWorldBackend.Services.Operator
                 {
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        photo.CopyTo(stream);
+                        photo.CopyToAsync(stream);
                     }
                 }catch(Exception ex) { 
                     Console.WriteLine("Error while uploading photos\n"+ex.ToString());

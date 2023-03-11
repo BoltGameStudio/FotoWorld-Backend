@@ -18,7 +18,7 @@ namespace FotoWorldBackend.Services.UserS
             _config = config;
         }
 
-        public bool AddOfferToFavourite(int offerId, string userId)
+        public bool FollowOffer(int offerId, string userId)
         {
 
             try
@@ -177,7 +177,7 @@ namespace FotoWorldBackend.Services.UserS
             return ret;
         }
 
-        public bool RemoveOfferFromFavourite(int offerId, string userId)
+        public bool UnfollowOffer(int offerId, string userId)
         {
 
             try
