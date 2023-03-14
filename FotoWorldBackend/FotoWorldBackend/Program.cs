@@ -3,6 +3,7 @@ using FotoWorldBackend.Services.Auth;
 using FotoWorldBackend.Services.Email;
 using FotoWorldBackend.Services.Operator;
 using FotoWorldBackend.Services.Token;
+using FotoWorldBackend.Services.UserS;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -22,6 +23,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IOperatorService, OperatorService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 
 builder.Services.AddDbContext<FotoWorldContext>(options => options.UseSqlServer("name=ConnectionStrings:DevDatabase"));
 
