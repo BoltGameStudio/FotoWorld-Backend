@@ -22,12 +22,12 @@ namespace FotoWorldBackend.Services.Operator
             _config = config;
         }
 
-        public Offer CreateOffer(CreateOfferModel offer, string authorId)
+        public OfferWithPhoto CreateOffer(CreateOfferModel offer, string authorId)
         {
             var photosID = UploadPhotos(offer); 
             if(photosID != null)
             {
-                var newOffer = new Offer();
+                var newOffer = new OfferWithPhoto();
 
                 var authorOperator = _context.Operators.FirstOrDefault(m => m.AccountId == Convert.ToInt32(SymmetricEncryption.Decrypt(_config["SECRET_KEY"], authorId)));
 
@@ -141,7 +141,7 @@ namespace FotoWorldBackend.Services.Operator
             return true;
         }
 
-        public Offer UpdateOffer(CreateOfferModel newOffer, string authorId, int oldOfferId)
+        public OfferWithPhoto UpdateOffer(CreateOfferModel newOffer, string authorId, int oldOfferId)
         {
             var oldOffer = _context.Offers.FirstOrDefault(m => m.Id == oldOfferId);
             if(oldOffer == null)

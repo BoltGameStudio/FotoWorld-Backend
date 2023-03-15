@@ -17,7 +17,7 @@ public partial class FotoWorldContext : DbContext
 
     public virtual DbSet<FollowedOffer> FollowedOffers { get; set; }
 
-    public virtual DbSet<Offer> Offers { get; set; }
+    public virtual DbSet<OfferWithPhoto> Offers { get; set; }
 
     public virtual DbSet<OfferPhoto> OfferPhotos { get; set; }
 
@@ -49,7 +49,7 @@ public partial class FotoWorldContext : DbContext
                 .HasConstraintName("FK_FollowedOffers_Users");
         });
 
-        modelBuilder.Entity<Offer>(entity =>
+        modelBuilder.Entity<OfferWithPhoto>(entity =>
         {
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Description).HasColumnName("description");

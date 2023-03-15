@@ -11,7 +11,7 @@ public partial class OfferPhoto
 
     public int PhotoId { get; set; }
 
-    public virtual Offer Offer { get; set; } = null!;
+    public virtual OfferWithPhoto Offer { get; set; } = null!;
 
     public virtual Photo Photo { get; set; } = null!;
 }

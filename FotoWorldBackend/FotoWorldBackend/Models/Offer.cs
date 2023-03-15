@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace FotoWorldBackend.Models;
 
-public partial class Offer
+public partial class OfferWithPhoto
 {
     public int Id { get; set; }
 

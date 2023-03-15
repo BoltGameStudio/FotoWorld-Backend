@@ -27,7 +27,7 @@ public partial class Operator
 
     public virtual User Account { get; set; } = null!;
 
-    public virtual ICollection<Offer> Offers { get; } = new List<Offer>();
+    public virtual ICollection<OfferWithPhoto> Offers { get; } = new List<OfferWithPhoto>();
 
     public virtual ICollection<OperatorRating> OperatorRatings { get; } = new List<OperatorRating>();
 }

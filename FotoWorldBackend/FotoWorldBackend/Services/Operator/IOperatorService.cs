@@ -11,7 +11,7 @@ namespace FotoWorldBackend.Services.Operator
         /// <param name="offer">offer data</param>
         /// <param name="authorId">encoded operator id</param>
         /// <returns>new offer</returns>
-        public Offer CreateOffer(CreateOfferModel offer, string authorId);
+        public OfferWithPhoto CreateOffer(CreateOfferModel offer, string authorId);
 
         /// <summary>
         /// Edits offer with given id
@@ -20,7 +20,7 @@ namespace FotoWorldBackend.Services.Operator
         /// <param name="authorId">encoded operator id</param>
         /// <param name="oldOfferId">id of eddited offer</param>
         /// <returns>edited offer</returns>
-        public Offer UpdateOffer(CreateOfferModel newOffer, string authorId, int oldOfferId);
+        public OfferWithPhoto UpdateOffer(CreateOfferModel newOffer, string authorId, int oldOfferId);
 
         /// <summary>
         /// saves photos passed in offer form

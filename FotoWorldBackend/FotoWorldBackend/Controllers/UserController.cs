@@ -40,7 +40,11 @@ namespace FotoWorldBackend.Controllers
         public IActionResult GetOfferDetailed([FromRoute] int id)
         {
             var ret = _userService.GetOfferDetailed(id);
-            return Ok(ret);
+            if(ret!=null)
+            {
+                return Ok(ret);
+            }
+            return NotFound();
 
         }
 
