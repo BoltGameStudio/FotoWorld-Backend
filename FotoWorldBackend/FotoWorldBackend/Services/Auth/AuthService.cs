@@ -57,6 +57,7 @@ namespace FotoWorldBackend.Services.Auth
                         newUser.IsOperator = register.isOperator;
                         newUser.IsActive = false;
                         _context.Users.Add(newUser);
+                        _context.SaveChanges();
                     }
                     catch(Exception ex) 
                     {
@@ -87,6 +88,8 @@ namespace FotoWorldBackend.Services.Auth
                         catch(Exception ex)
                         {
                             Console.WriteLine("Error while creating new operator\n"+ex.ToString());
+                            var userToRemove = _context.Users.Remove(newUser);
+                            _context.SaveChanges();
                             return null;
                         }
 
