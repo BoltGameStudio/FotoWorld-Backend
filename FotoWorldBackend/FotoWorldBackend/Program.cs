@@ -26,7 +26,7 @@ builder.Services.AddScoped<IOperatorService, OperatorService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 
-builder.Services.AddDbContext<FotoWorldContext>(options => options.UseSqlServer("name=ConnectionStrings:DevDatabase"));
+builder.Services.AddDbContext<FotoWorldContext>(options => options.UseSqlServer("name=ConnectionStrings:TestDatabase"));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => {
