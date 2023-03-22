@@ -39,6 +39,7 @@ namespace FotoWorldBackend.Services.Operator
                 try
                 {
                     _context.Offers.Add(newOffer);
+                    _context.SaveChanges();
                 }
                 catch(Exception ex) {
                     Console.WriteLine("Error while createing offer in context\n" + ex.ToString());
@@ -53,8 +54,10 @@ namespace FotoWorldBackend.Services.Operator
                         offerPhoto.OfferId = newOffer.Id;
                         offerPhoto.PhotoId = id;
 
+
                         _context.OfferPhotos.Add(offerPhoto);
-                        
+                        _context.SaveChanges();
+
                     }
                 }catch(Exception ex)
                 {
@@ -97,12 +100,14 @@ namespace FotoWorldBackend.Services.Operator
 
 
             var oldPhotos = _context.OfferPhotos.Where(m => m.OfferId == offerId).ToList();
+
             foreach (var photoOffer in oldPhotos)
             {
                 try
                 {
-                    var photo = _context.Photos.FirstOrDefault(m => m.Id == photoOffer.Id);
+                    var photo = _context.Photos.FirstOrDefault(m => m.Id == photoOffer.PhotoId);
 
+                    //Console.WriteLine(photo.PhotoUrl);
                     File.Delete(photo.PhotoUrl);
 
                     _context.OfferPhotos.Remove(photoOffer);
@@ -167,7 +172,7 @@ namespace FotoWorldBackend.Services.Operator
                     var oldPhotos = _context.OfferPhotos.Where(m => m.OfferId == oldOfferId).ToList();
                     foreach (var photoOffer in oldPhotos)
                     {
-                        var photo = _context.Photos.FirstOrDefault(m => m.Id == photoOffer.Id);
+                        var photo = _context.Photos.FirstOrDefault(m => m.Id == photoOffer.PhotoId);
 
                         File.Delete(photo.PhotoUrl);
 
@@ -248,11 +253,12 @@ namespace FotoWorldBackend.Services.Operator
                     return null;
                 }
 
-                var databasePhoto = new Photo();
+                var databasePhoto = new Photo(); 
                 databasePhoto.PhotoUrl = filePath;
                 try
                 {
                     _context.Photos.Add(databasePhoto);
+                    _context.SaveChanges();
                 }
                 catch(Exception ex)
                 {

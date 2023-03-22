@@ -33,7 +33,7 @@ namespace FotoWorldBackend.Controllers
             var ret = _operatorService.CreateOffer(offer, id);
             if(ret != null)
             {
-                return Ok(ret);
+                return Ok(ret.Id);
             }
             return BadRequest();
         }
