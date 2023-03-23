@@ -1,0 +1,226 @@
+USE [master]
+
+USE [FotoWorldTest]
+
+/****** Object:  Table [dbo].[FollowedOffers]    Script Date: 16.03.2023 22:48:04 ******/
+SET ANSI_NULLS ON
+
+SET QUOTED_IDENTIFIER ON
+
+CREATE TABLE [dbo].[FollowedOffers](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[offerID] [int] NOT NULL,
+	[userID] [int] NOT NULL,
+ CONSTRAINT [PK_FollowedOffers] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+
+/****** Object:  Table [dbo].[OfferPhotos]    Script Date: 16.03.2023 22:48:04 ******/
+SET ANSI_NULLS ON
+
+SET QUOTED_IDENTIFIER ON
+
+CREATE TABLE [dbo].[OfferPhotos](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[offerID] [int] NOT NULL,
+	[photoID] [int] NOT NULL,
+ CONSTRAINT [PK_OfferPhotos] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+
+/****** Object:  Table [dbo].[Offers]    Script Date: 16.03.2023 22:48:04 ******/
+SET ANSI_NULLS ON
+
+SET QUOTED_IDENTIFIER ON
+
+CREATE TABLE [dbo].[Offers](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[operatorID] [int] NOT NULL,
+	[title] [nvarchar](100) NOT NULL,
+	[description] [nvarchar](max) NOT NULL,
+ CONSTRAINT [PK_Offers] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+/****** Object:  Table [dbo].[OperatorRatings]    Script Date: 16.03.2023 22:48:04 ******/
+SET ANSI_NULLS ON
+
+SET QUOTED_IDENTIFIER ON
+
+CREATE TABLE [dbo].[OperatorRatings](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[operatorID] [int] NOT NULL,
+	[userID] [int] NOT NULL,
+	[stars] [float] NOT NULL,
+	[comment] [nvarchar](500) NOT NULL,
+ CONSTRAINT [PK_OperatorRatings] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+
+/****** Object:  Table [dbo].[Operators]    Script Date: 16.03.2023 22:48:04 ******/
+SET ANSI_NULLS ON
+
+SET QUOTED_IDENTIFIER ON
+
+CREATE TABLE [dbo].[Operators](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[accountID] [int] NOT NULL,
+	[isCompany] [bit] NOT NULL,
+	[availability] [nvarchar](50) NOT NULL,
+	[locationCity] [nvarchar](150) NOT NULL,
+	[operatingRadius] [int] NOT NULL,
+	[photo] [bit] NOT NULL,
+	[dronePhoto] [bit] NOT NULL,
+	[filming] [bit] NOT NULL,
+	[droneFilming] [bit] NOT NULL,
+ CONSTRAINT [PK_Operators] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+
+/****** Object:  Table [dbo].[Photos]    Script Date: 16.03.2023 22:48:04 ******/
+SET ANSI_NULLS ON
+
+SET QUOTED_IDENTIFIER ON
+
+CREATE TABLE [dbo].[Photos](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[photoURL] [nvarchar](200) NOT NULL,
+ CONSTRAINT [PK_Photos] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+
+/****** Object:  Table [dbo].[Users]    Script Date: 16.03.2023 22:48:04 ******/
+SET ANSI_NULLS ON
+
+SET QUOTED_IDENTIFIER ON
+
+CREATE TABLE [dbo].[Users](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[username] [nvarchar](50) NOT NULL,
+	[hashedPassword] [nvarchar](250) NOT NULL,
+	[passwordSalt] [nvarchar](250) NOT NULL,
+	[email] [nvarchar](100) NOT NULL,
+	[phoneNumber] [nvarchar](20) NOT NULL,
+	[isActive] [bit] NOT NULL,
+	[isOperator] [bit] NOT NULL,
+ CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+
+SET IDENTITY_INSERT [dbo].[FollowedOffers] ON 
+
+INSERT [dbo].[FollowedOffers] ([ID], [offerID], [userID]) VALUES (1, 1, 2)
+SET IDENTITY_INSERT [dbo].[FollowedOffers] OFF
+
+SET IDENTITY_INSERT [dbo].[OfferPhotos] ON 
+
+INSERT [dbo].[OfferPhotos] ([ID], [offerID], [photoID]) VALUES (1, 1, 1)
+INSERT [dbo].[OfferPhotos] ([ID], [offerID], [photoID]) VALUES (2, 1, 2)
+INSERT [dbo].[OfferPhotos] ([ID], [offerID], [photoID]) VALUES (3, 1, 3)
+INSERT [dbo].[OfferPhotos] ([ID], [offerID], [photoID]) VALUES (4, 1, 4)
+INSERT [dbo].[OfferPhotos] ([ID], [offerID], [photoID]) VALUES (5, 2, 5)
+INSERT [dbo].[OfferPhotos] ([ID], [offerID], [photoID]) VALUES (6, 2, 6)
+INSERT [dbo].[OfferPhotos] ([ID], [offerID], [photoID]) VALUES (7, 2, 7)
+INSERT [dbo].[OfferPhotos] ([ID], [offerID], [photoID]) VALUES (8, 2, 8)
+SET IDENTITY_INSERT [dbo].[OfferPhotos] OFF
+
+SET IDENTITY_INSERT [dbo].[Offers] ON 
+
+INSERT [dbo].[Offers] ([ID], [operatorID], [title], [description]) VALUES (1, 3, N'offerTitle1', N'offerDesc1')
+INSERT [dbo].[Offers] ([ID], [operatorID], [title], [description]) VALUES (2, 4, N'offerTitle2', N'offerDesc2')
+SET IDENTITY_INSERT [dbo].[Offers] OFF
+
+SET IDENTITY_INSERT [dbo].[OperatorRatings] ON 
+
+INSERT [dbo].[OperatorRatings] ([ID], [operatorID], [userID], [stars], [comment]) VALUES (1, 3, 2, 5, N'opinion1')
+INSERT [dbo].[OperatorRatings] ([ID], [operatorID], [userID], [stars], [comment]) VALUES (2, 4, 2, 1, N'opinion2')
+SET IDENTITY_INSERT [dbo].[OperatorRatings] OFF
+
+SET IDENTITY_INSERT [dbo].[Operators] ON 
+
+INSERT [dbo].[Operators] ([ID], [accountID], [isCompany], [availability], [locationCity], [operatingRadius], [photo], [dronePhoto], [filming], [droneFilming]) VALUES (3, 6, 1, N'pon-nd', N'Wroclaw', 100, 1, 1, 1, 1)
+INSERT [dbo].[Operators] ([ID], [accountID], [isCompany], [availability], [locationCity], [operatingRadius], [photo], [dronePhoto], [filming], [droneFilming]) VALUES (4, 7, 0, N'pon-nd', N'Wroclaw', 100, 0, 0, 1, 1)
+SET IDENTITY_INSERT [dbo].[Operators] OFF
+
+SET IDENTITY_INSERT [dbo].[Photos] ON 
+
+INSERT [dbo].[Photos] ([ID], [photoURL]) VALUES (1, N'photoPath1')
+INSERT [dbo].[Photos] ([ID], [photoURL]) VALUES (2, N'photoPath2')
+INSERT [dbo].[Photos] ([ID], [photoURL]) VALUES (3, N'photoPath3')
+INSERT [dbo].[Photos] ([ID], [photoURL]) VALUES (4, N'photoPath4')
+INSERT [dbo].[Photos] ([ID], [photoURL]) VALUES (5, N'photoPath5')
+INSERT [dbo].[Photos] ([ID], [photoURL]) VALUES (6, N'photoPath6')
+INSERT [dbo].[Photos] ([ID], [photoURL]) VALUES (7, N'photoPath7')
+INSERT [dbo].[Photos] ([ID], [photoURL]) VALUES (8, N'photoPath8')
+SET IDENTITY_INSERT [dbo].[Photos] OFF
+
+SET IDENTITY_INSERT [dbo].[Users] ON 
+
+INSERT [dbo].[Users] ([ID], [username], [hashedPassword], [passwordSalt], [email], [phoneNumber], [isActive], [isOperator]) VALUES (2, N'user1', N'i9vFiizmVv/Ivc+xe+FDLD7okZ7dDRQAfGb5TFmYFjA=', N'Id3o3sBXquL6zZ1TOaDeDw==', N'email1@email.com', N'123456789', 1, 0)
+INSERT [dbo].[Users] ([ID], [username], [hashedPassword], [passwordSalt], [email], [phoneNumber], [isActive], [isOperator]) VALUES (3, N'user2', N'cxcEsFtlb3pUCXcmnUADC0BnUzjzNew/Mbe4IjFYmPI=', N'BO7nqxp7macX/Aq0E63jJw==', N'email2@email.com', N'123456789', 0, 0)
+INSERT [dbo].[Users] ([ID], [username], [hashedPassword], [passwordSalt], [email], [phoneNumber], [isActive], [isOperator]) VALUES (6, N'operator1', N'2gNxA6lZCshfFkvm8k3WjA90BLrtjVURHywwDRMNSLc=', N'nPzCR2/1VRm3s9hb5t5+FA==', N'emailop1@email.com', N'123456789', 1, 1)
+INSERT [dbo].[Users] ([ID], [username], [hashedPassword], [passwordSalt], [email], [phoneNumber], [isActive], [isOperator]) VALUES (7, N'operator2', N'4D2KTPyqp24T+EAyWnh+gyUVNFF0ROtwwNW/TRx0irs=', N'R5/WScVUPwQHNalIfxvk1A==', N'emailop2@email.com', N'123456789', 1, 1)
+SET IDENTITY_INSERT [dbo].[Users] OFF
+
+ALTER TABLE [dbo].[Users] ADD  CONSTRAINT [DF_Users_isActive]  DEFAULT ((0)) FOR [isActive]
+
+ALTER TABLE [dbo].[Users] ADD  CONSTRAINT [DF_Users_isOperator]  DEFAULT ((0)) FOR [isOperator]
+
+ALTER TABLE [dbo].[FollowedOffers]  WITH CHECK ADD  CONSTRAINT [FK_FollowedOffers_Offers] FOREIGN KEY([offerID])
+REFERENCES [dbo].[Offers] ([ID])
+
+ALTER TABLE [dbo].[FollowedOffers] CHECK CONSTRAINT [FK_FollowedOffers_Offers]
+
+ALTER TABLE [dbo].[FollowedOffers]  WITH CHECK ADD  CONSTRAINT [FK_FollowedOffers_Users] FOREIGN KEY([userID])
+REFERENCES [dbo].[Users] ([ID])
+
+ALTER TABLE [dbo].[FollowedOffers] CHECK CONSTRAINT [FK_FollowedOffers_Users]
+
+ALTER TABLE [dbo].[OfferPhotos]  WITH CHECK ADD  CONSTRAINT [FK_OfferPhotos_Offers] FOREIGN KEY([offerID])
+REFERENCES [dbo].[Offers] ([ID])
+
+ALTER TABLE [dbo].[OfferPhotos] CHECK CONSTRAINT [FK_OfferPhotos_Offers]
+
+ALTER TABLE [dbo].[OfferPhotos]  WITH CHECK ADD  CONSTRAINT [FK_OfferPhotos_Photos] FOREIGN KEY([photoID])
+REFERENCES [dbo].[Photos] ([ID])
+
+ALTER TABLE [dbo].[OfferPhotos] CHECK CONSTRAINT [FK_OfferPhotos_Photos]
+
+ALTER TABLE [dbo].[Offers]  WITH CHECK ADD  CONSTRAINT [FK_Offers_Operators] FOREIGN KEY([operatorID])
+REFERENCES [dbo].[Operators] ([ID])
+
+ALTER TABLE [dbo].[Offers] CHECK CONSTRAINT [FK_Offers_Operators]
+
+ALTER TABLE [dbo].[OperatorRatings]  WITH CHECK ADD  CONSTRAINT [FK_OperatorRatings_Operators] FOREIGN KEY([operatorID])
+REFERENCES [dbo].[Operators] ([ID])
+
+ALTER TABLE [dbo].[OperatorRatings] CHECK CONSTRAINT [FK_OperatorRatings_Operators]
+
+ALTER TABLE [dbo].[OperatorRatings]  WITH CHECK ADD  CONSTRAINT [FK_OperatorRatings_Users] FOREIGN KEY([userID])
+REFERENCES [dbo].[Users] ([ID])
+
+ALTER TABLE [dbo].[OperatorRatings] CHECK CONSTRAINT [FK_OperatorRatings_Users]
+
+ALTER TABLE [dbo].[Operators]  WITH CHECK ADD  CONSTRAINT [FK_Operators_Users] FOREIGN KEY([accountID])
+REFERENCES [dbo].[Users] ([ID])
+
+ALTER TABLE [dbo].[Operators] CHECK CONSTRAINT [FK_Operators_Users]
+
+USE [master]
+
+ALTER DATABASE [FotoWorldTest] SET  READ_WRITE 
+
